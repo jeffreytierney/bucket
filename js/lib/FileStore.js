@@ -1,4 +1,4 @@
-;(function(scope) {
+;(function() {
   
   var storage_increment = (1024*1024*100), // 100 MB
       cur_quota = 0;
@@ -83,7 +83,7 @@
       }
     },
     checkQuotaAndRequest: function(cb, forceRequest) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) {
         dfr.reject();
@@ -109,21 +109,23 @@
         )
       }
       
-      return dfr.promise();
+      return dfr;
     },
     requestPermission: function(bytes) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       var _this = this;
-      dfr.done(function(bytes_granted) { _this.support = true;  });
-      dfr.fail(function(ex) { this.support = false; console.log("Error requesting storage: ", ex.message); });
+      dfr.then(
+        function(bytes_granted) { _this.support = true;  },
+        function(ex) { this.support = false; console.log("Error requesting storage: ", ex.message); }
+      );
       
       window.StorageInfo.requestQuota(window.PERSISTENT, bytes, dfr.resolve, dfr.reject);
       
-      return dfr.promise();
+      return dfr;
     },
     fetch: function(src) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       var xhr;
       try { xhr= new XMLHttpRequest();} 
        catch (e) { try { xhr = new ActiveXObject("Microsoft.XMLHTTP"); } 
@@ -140,14 +142,14 @@
        xhr.send(null);
 
       
-      return dfr.promise()
+      return dfr;
     },
     fetchAndStore: function(src) {
       
       var promise = this.fetch(src),
           _this = this;
           
-      promise.done(function(xhr, src) {
+      promise.then(function(xhr, src) {
         _this.store(xhr.response, xhr.getResponseHeader("Content-Type"));
       });
       
@@ -160,7 +162,7 @@
       return this.get(key);
     },
     getFileEntry: function(key) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) { 
         dfr.reject(); 
@@ -178,10 +180,10 @@
 
       window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
       
-      return dfr.promise();
+      return dfr;
     },
     get: function(key) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) { 
         dfr.reject(); 
@@ -217,10 +219,10 @@
       }
       
       window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
-      return dfr.promise();
+      return dfr;
     },
     getAsDataURL: function(key) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) { 
         dfr.reject(); 
@@ -255,11 +257,11 @@
       }
       
       window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
-      return dfr.promise();
+      return dfr;
     },
     store: function(val, type) {
       
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) { 
         dfr.reject(); 
@@ -321,10 +323,10 @@
       
       
       window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
-      return dfr.promise();
+      return dfr;
     },
     remove: function(key, cb) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) { 
         dfr.reject(); 
@@ -343,10 +345,10 @@
         }, dfr.reject);
       }, dfr.reject);
       
-      return dfr.promise();
+      return dfr;
     },
     listKeys: function(cb) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) { 
         dfr.reject(); 
@@ -354,7 +356,6 @@
       }
      
       var onInitFs = function(fs) {
-
         var dirReader = fs.root.createReader();
         var entries = [];
 
@@ -375,10 +376,10 @@
       }
       
       window.requestFileSystem(window.PERSISTENT, cur_quota, onInitFs, dfr.reject);
-      return dfr.promise();
+      return dfr;
     },
     clear: function(cb) {
-      var dfr = $.Deferred();
+      var dfr = new RSVP.Promise();
       
       if(!this.support) { 
         dfr.reject(); 
@@ -388,13 +389,13 @@
       // TODO: this
       var _this = this;
       var lk_promise = this.listKeys()
-      lk_promise.done(function(results) {
+      lk_promise.then(function(results) {
         var keys = results.map(function(file) { return file.name; });
         keys.forEach(function(key) { _this.remove(key); });
         dfr.resolve();
       });
       
-      return dfr.promise();
+      return dfr;
     }
   };
   
@@ -404,6 +405,6 @@
   }
   
 
-  scope.FileStore = Store;
+  window.BUCKET.fileStore = new Store();
 
-})(this);
+})();

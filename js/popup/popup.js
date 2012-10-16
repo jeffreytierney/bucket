@@ -1,14 +1,14 @@
 (function() {
-  var fs = new FileStore();
-  
-  var images = document.getElementById("images");
-  
-  var lk_promise = fs.listKeys(),
+  var images = document.getElementById("images"),
+      lk_promise = BUCKET.fileStore.listKeys(),
       get_url_promise;
-  lk_promise.done(function(key) { 
-    for (var i=0; i< key.length; i++) { 
-      get_url_promise = fs.getAsDataURL(key[i].name);
-      get_url_promise.done(function(fr) { 
+      
+      
+  lk_promise.then(function(keys) { 
+    console.log(keys);
+    for (var i=0; i< keys.length; i++) { 
+      get_url_promise = BUCKET.fileStore.getAsDataURL(keys[i].name);
+      get_url_promise.then(function(fr) { 
         images.appendChild(newT.img({src:fr}));
       })
     }

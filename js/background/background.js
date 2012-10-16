@@ -1,5 +1,4 @@
 (function() {
-  
   var regex = {
     data_uri: /data\:\s*([^;]+);\s*base64\,(.+)/i
   };
@@ -52,12 +51,11 @@
   var message_listeners = {
     
     storeImage: function(data, mime_type) {
-      var bucketFileStore = new FileStore();
-      bucketFileStore.store(data, mime_type);
+      
+      BUCKET.fileStore.store(data, mime_type);
     },
     fetchImage: function(src) {
-      var bucketFileStore = new FileStore();
-      bucketFileStore.fetchAndStore(src);
+      BUCKET.fileStore.fetchAndStore(src);
     }
     
     

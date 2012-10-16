@@ -5,10 +5,11 @@
   "description": "Your own bucket of images",
   "background": {
     "scripts": [
-      "js/vendor/jquery.js",
+      "js/vendor/rsvp.min.js",
+      "js/vendor/md5.js",
+      "js/lib/BUCKET.js",
       "js/lib/FileStore.js",
-      "js/background/background.js",
-      "js/vendor/md5.js"
+      "js/background/background.js"
     ],
     "persistent": false
   },
