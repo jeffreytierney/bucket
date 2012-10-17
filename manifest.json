@@ -9,6 +9,7 @@
       "js/vendor/md5.js",
       "js/lib/BUCKET.js",
       "js/lib/FileStore.js",
+      "js/lib/File.js",
       "js/background/background.js"
     ],
     "persistent": false
@@ -20,7 +21,9 @@
   "content_scripts": [
     {
       "matches": [ "http://*/*", "https://*/*" ],
-      "js": [ "js/content_scripts/context_menu.js" ]
+      "js": [ 
+        "js/content_scripts/context_menu.js"
+      ]
     }
   ],
   "icons": {

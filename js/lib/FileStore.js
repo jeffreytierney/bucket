@@ -105,7 +105,7 @@
               dfr.resolve();
             }
           },
-          dfr.reject()
+          function() { dfr.reject(); }
         )
       }
       
@@ -120,7 +120,7 @@
         function(ex) { this.support = false; console.log("Error requesting storage: ", ex.message); }
       );
       
-      window.StorageInfo.requestQuota(window.PERSISTENT, bytes, dfr.resolve, dfr.reject);
+      window.StorageInfo.requestQuota(window.PERSISTENT, bytes, dfr.resolve, function() { dfr.reject(); });
       
       return dfr;
     },
@@ -178,7 +178,7 @@
         }, function() { dfr.reject(); });
       }
 
-      window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
+      window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, function() { dfr.reject(); });
       
       return dfr;
     },
@@ -196,29 +196,28 @@
           // Get a File object representing the file,
           // then use FileReader to read its contents.
           fileEntry.file(function(file) {
-            console.log(file.type);
-             var reader = new FileReader();
-
-             reader.onloadend = function(e) {
-               
-               var val = {};
-               try {
-                 //console.log(this.result)
-                 val = this.result;
-               }
-               catch(e) {
-                 console.log(e.message)
-                 console.log(this.result);
-               }
-               dfr.resolve(val, file);
-             };
-             console.log(reader)
-             reader.readAsText(file);
-          }, dfr.reject);
-        }, dfr.reject);
+             dfr.resolve(file);
+          }, function() { dfr.reject(); });
+        }, function() { dfr.reject(); });
       }
       
-      window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
+      window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, function() { dfr.reject(); });
+      return dfr;
+    },
+    getAsBinary: function(key) {
+      var dfr = new RSVP.Promise();
+      
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+      
+      this.get(key).then(function(file) {
+        _this.readFileAs(file, "BINARY").then(function(val) {
+          dfr.resolve(val);
+        })
+      })
+      
       return dfr;
     },
     getAsDataURL: function(key) {
@@ -229,34 +228,42 @@
         return dfr;
       }
       
-      var onFSLoad = function(fs) { 
-        
-        fs.root.getFile(key, {}, function(fileEntry) {
-          // Get a File object representing the file,
-          // then use FileReader to read its contents.
-          fileEntry.file(function(file) {
-            console.log(file.type);
-             var reader = new FileReader();
-
-             reader.onloadend = function(e) {
-               
-               var val = {};
-               try {
-                 val = this.result;
-               }
-               catch(e) {
-                 console.log(e.message)
-                 console.log(this.result);
-               }
-               dfr.resolve(val, file);
-             };
-             console.log(reader)
-             reader.readAsDataURL(file);
-          }, dfr.reject);
-        }, dfr.reject);
+      var _this = this;
+      this.get(key).then(function(file) {
+        _this.readFileAs(file, "DATA_URL").then(function(val) {
+          dfr.resolve(val);
+        })
+      });
+      
+      return dfr;
+    },
+    readFileAs: function(file, data_type) {
+      
+      var dfr = new RSVP.Promise();
+      
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
       }
       
-      window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
+      var method = (data_type && (typeof data_type === "string") && data_type.toLowerCase() === "binary" ? "readAsText" : "readAsDataURL"),
+          reader = new FileReader();
+
+      reader.onloadend = function(e) {
+
+        var val = {};
+        try {
+          //console.log(this.result)
+          val = this.result;
+        }
+        catch(e) {
+          dfr.reject(e);
+        }
+        dfr.resolve(val);
+      };
+      
+      reader[method](file);
+
       return dfr;
     },
     store: function(val, type) {
@@ -314,15 +321,15 @@
                   console.log(fileWriter);
                   fileWriter.write(blob);
                 }
-              }, dfr.reject);
-            }, dfr.reject);
+              }, function() { dfr.reject(); });
+            }, function() { dfr.reject(); });
           }
           f.readAsDataURL(bb.getBlob());
         }
       
       
       
-      window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, dfr.reject);
+      window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, function() { dfr.reject(); });
       return dfr;
     },
     remove: function(key, cb) {
@@ -340,10 +347,10 @@
           fileEntry.remove(function() {
             dfr.resolve();
             console.log('File removed.');
-          }, dfr.reject);
+          }, function() { dfr.reject(); });
 
-        }, dfr.reject);
-      }, dfr.reject);
+        }, function() { dfr.reject(); });
+      }, function() { dfr.reject(); });
       
       return dfr;
     },
@@ -368,14 +375,14 @@
               entries = entries.concat(toArray(results));
               readEntries();
             }
-          }, dfr.reject);
+          }, function() { dfr.reject(); });
         };
 
         readEntries(); // Start reading dirs.
 
       }
       
-      window.requestFileSystem(window.PERSISTENT, cur_quota, onInitFs, dfr.reject);
+      window.requestFileSystem(window.PERSISTENT, cur_quota, onInitFs, function() { dfr.reject(); });
       return dfr;
     },
     clear: function(cb) {
