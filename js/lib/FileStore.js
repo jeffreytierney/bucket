@@ -135,7 +135,7 @@
        xhr.open("GET", src);
        xhr.onreadystatechange = function() {
         if(xhr.readyState != 4) { return; }
-        if(xhr.status==200) { dfr.resolve(xhr, src); }
+        if(xhr.status==200) { dfr.resolve(xhr); }
         else { dfr.reject(); }
         return true;
        };
@@ -226,8 +226,7 @@
           console.log(e.message);
           dfr.reject(e);
       }).then(function(val) {
-          console.log(val);
-          dfr.resolve(val);;
+          dfr.resolve(val);
         }, function(e) {
           console.log(e.message);
           dfr.reject(e);
@@ -274,7 +273,6 @@
 
         var val = {};
         try {
-          console.log(this.result)
           val = this.result;
           dfr.resolve(val);
         }
@@ -307,7 +305,6 @@
         f.onload = function(on_e) {
           //console.log(on_e.target.result);
           key = key || getFileKey(on_e.target.result, type);
-          console.log(key, type, val);
           fs.root.getFile(key, {create:true}, function(fileEntry) {
             // Create a FileWriter object for our FileEntry (log.txt).
             fileEntry.createWriter(function(fileWriter) {
@@ -356,7 +353,7 @@
       window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, function() { dfr.reject(); });
       return dfr;
     },
-    remove: function(key, cb) {
+    removeFile: function(key) {
       var dfr = new RSVP.Promise();
       
       if(!this.support) { 
@@ -376,6 +373,29 @@
         }, function() { dfr.reject(); });
       }, function() { dfr.reject(); });
       
+      return dfr;
+    },
+    remove: function(key) {
+      var dfr = new RSVP.Promise();
+
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+
+      var _this = this;
+      this.removeFile(key).then(function(){
+          return _this.removeFileMetadata(key);
+        }, function(e) {
+          return _this.removeFileMetadata(key);
+      }).then(function() {
+        console.log("removed metadata")
+          dfr.resolve(key);
+        }, function(e) {
+          console.log(e)
+          dfr.reject(e);
+      })
+
       return dfr;
     },
     listKeys: function(filter_metadata) {
@@ -412,7 +432,7 @@
       window.requestFileSystem(window.PERSISTENT, cur_quota, onInitFs, function() { dfr.reject(); });
       return dfr;
     },
-    clear: function(cb) {
+    clear: function() {
       var dfr = new RSVP.Promise();
       
       if(!this.support) { 
@@ -494,6 +514,29 @@
       var _this = this;
       var md_promise = this.getFullMetadata().then(function(data) {
           data[key] = metadata;
+          return _this.saveMetadata();
+        }, function() { 
+          dfr.reject(); 
+      }).then(function(saved_data) {
+          dfr.resolve(saved_data);
+        }, function() { 
+          dfr.reject();
+      });
+      
+      return dfr;
+    },
+    removeFileMetadata: function(key) {
+      var dfr = new RSVP.Promise();
+
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+      
+      console.log(key);
+      var _this = this;
+      var md_promise = this.getFullMetadata().then(function(data) {
+          delete data[key];
           return _this.saveMetadata();
         }, function() { 
           dfr.reject(); 

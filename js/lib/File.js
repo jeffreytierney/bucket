@@ -94,19 +94,27 @@
     metadata = metadata || {};
     metadata.original_url = url;
     var bf = new bFile();
+    
+    var _file_name;
     BUCKET.fileStore.fetchAndStore(url).then(function(file_name) {
-      console.log(file_name);
-      bf.data.metadata = new BUCKET.FileMetadata(metadata);
-      BUCKET.fileStore.updateFileMetadata(file_name, bf.data.metadata.toJSON());
-      loadFile.call(bf, file_name);
-    }, function() {
-      bf.loaded.reject();
+        _file_name = file_name;
+        bf.data.metadata = new BUCKET.FileMetadata(metadata);
+        return BUCKET.fileStore.updateFileMetadata(file_name, bf.data.metadata.toJSON());
+      }, function() {
+        bf.loaded.reject();
+    }).then(function() {
+        loadFile.call(bf, _file_name);
+      }, function() {
+        bf.loaded.reject();
     });
     
     return bf;
   }
   
   bFile.newFromDataURI = function(url, metadata) {
+    metadata = metadata || {};
+    metadata.original_url = "";
+
     var bf = new bFile();
 
 
@@ -118,13 +126,20 @@
     if (matches) {
       var mime_type = matches[1],
           data = convertToArrayBuffer(matches[2]);
-          
+      
+      var _file_name;
       BUCKET.fileStore.store(data, mime_type).then(function(file_name) {
-        bf.data.metadata = new BUCKET.FileMetadata(metadata);
-        BUCKET.FileStore.updateFileMetadata(file_name, bf.data.metadata);
-        loadFile.call(bf, file_name);
-      }, function() {
-        bf.loaded.reject();
+          _file_name = file_name
+          bf.data.metadata = new BUCKET.FileMetadata(metadata);
+          console.log(bf.data.metadata);
+          return BUCKET.fileStore.updateFileMetadata(file_name, bf.data.metadata.toJSON());   
+        }, function() {
+          bf.loaded.reject();
+      }).then(function() {
+        console.log("hi")
+          loadFile.call(bf, _file_name);
+        }, function() {
+          bf.loaded.reject();
       });
       
     } else {
