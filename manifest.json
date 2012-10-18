@@ -10,6 +10,7 @@
       "js/lib/BUCKET.js",
       "js/lib/FileStore.js",
       "js/lib/File.js",
+      "js/lib/FileMetadata.js",
       "js/background/background.js"
     ],
     "persistent": false

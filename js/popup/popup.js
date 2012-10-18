@@ -1,6 +1,6 @@
 (function() {
   var images = document.getElementById("images"),
-      lk_promise = BUCKET.fileStore.listKeys(),
+      lk_promise = BUCKET.fileStore.listKeys(true),
       get_url_promise;
       
       
@@ -14,10 +14,12 @@
       })
       */
       BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
+        console.log(bFile);
         return bFile.readAsDataUrl();
       }).then(function(data_url) {
+        console.log("hi");
           images.appendChild(newT.img({src:data_url}));
-        }, function(e) { console.log(e) }
+        }, function(e) { console.log("error", e) }
       );
       
     }

@@ -1,8 +1,5 @@
 (function() {
-  var regex = {
-    data_uri: /data\:\s*([^;]+);\s*base64\,(.+)/i
-  };
-  
+
   (function initContextMenu() {
     chrome.contextMenus.removeAll();
     var menu_item = chrome.contextMenus.create({
@@ -15,22 +12,12 @@
       function(info, tab) {
         console.log(info, tab);
         if(info.srcUrl) {
-          var matches = info.srcUrl.match(regex.data_uri);
-          if (matches) {
-            var mime_type = matches[1],
-                data = atob(matches[2]);
-                
-            //console.log(data.length, data)
-
-            var ab = new Uint8Array(data.length);
-            for (var i = 0; i < data.length; i++) {
-                ab[i] = data.charCodeAt(i) & 0xff;
-            }
-            
-            message_listeners.storeImage(ab, mime_type);
-          } else {
-            message_listeners.fetchImage(info.srcUrl);
+          var metadata = {
+            page_url: tab.url,
+            page_favicon: tab.favIconUrl,
+            page_title: tab.title
           }
+          BUCKET.File.newFromURI(info.srcUrl, metadata);
         }
       }
     );
@@ -49,15 +36,14 @@
   
   
   var message_listeners = {
-    
+    /*
     storeImage: function(data, mime_type) {
-      
       BUCKET.fileStore.store(data, mime_type);
     },
     fetchImage: function(src) {
       BUCKET.fileStore.fetchAndStore(src);
     }
-    
+    */
     
   }
     

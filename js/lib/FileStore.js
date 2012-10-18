@@ -1,8 +1,8 @@
 ;(function() {
   
   var storage_increment = (1024*1024*100), // 100 MB
-      cur_quota = 0;
-      
+      cur_quota = 0,
+      METADATA_FILE = "bucket_metadata";
       
   function getFileKey(data, type) {
     return CryptoJS.MD5(data).toString() + getFileExtension(type);
@@ -145,17 +145,22 @@
       return dfr;
     },
     fetchAndStore: function(src) {
+      var dfr = new RSVP.Promise();
       
-      var promise = this.fetch(src),
-          _this = this;
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+      var _this = this;
           
-      promise.then(function(xhr, src) {
-        _this.store(xhr.response, xhr.getResponseHeader("Content-Type"));
+      this.fetch(src).then(function(xhr) {
+        return _this.store(xhr.response, xhr.getResponseHeader("Content-Type"));
+      }).then(function(file_name) {
+        dfr.resolve(file_name);
       });
       
-      console.log(promise);
       
-      return promise;
+      return dfr;
 
     },
     getFile: function(key) {
@@ -197,8 +202,8 @@
           // then use FileReader to read its contents.
           fileEntry.file(function(file) {
              dfr.resolve(file);
-          }, function() { dfr.reject(); });
-        }, function() { dfr.reject(); });
+          }, function(e) { dfr.reject(e); });
+        }, function(e) { dfr.reject(e); });
       }
       
       window.requestFileSystem(window.PERSISTENT, cur_quota, onFSLoad, function() { dfr.reject(); });
@@ -212,11 +217,21 @@
         return dfr;
       }
       
+      console.log(key)
+      var _this = this;
       this.get(key).then(function(file) {
-        _this.readFileAs(file, "BINARY").then(function(val) {
-          dfr.resolve(val);
-        })
-      })
+          console.log(file);
+          return _this.readFileAs(file, "BINARY");
+        }, function(e) { 
+          console.log(e.message);
+          dfr.reject(e);
+      }).then(function(val) {
+          console.log(val);
+          dfr.resolve(val);;
+        }, function(e) {
+          console.log(e.message);
+          dfr.reject(e);
+      });
       
       return dfr;
     },
@@ -230,15 +245,19 @@
       
       var _this = this;
       this.get(key).then(function(file) {
-        _this.readFileAs(file, "DATA_URL").then(function(val) {
-          dfr.resolve(val);
-        })
+          return _this.readFileAs(file, "DATA_URL");
+        }, function(e) {
+          dfr.reject(e);
+      }).then(function(val) {
+        dfr.resolve(val);
+      }, function(e) {
+        dfr.reject(e);
       });
-      
+  
       return dfr;
     },
     readFileAs: function(file, data_type) {
-      
+      console.log(file);
       var dfr = new RSVP.Promise();
       
       if(!this.support) { 
@@ -246,27 +265,31 @@
         return dfr;
       }
       
+
       var method = (data_type && (typeof data_type === "string") && data_type.toLowerCase() === "binary" ? "readAsText" : "readAsDataURL"),
           reader = new FileReader();
+          
 
       reader.onloadend = function(e) {
 
         var val = {};
         try {
-          //console.log(this.result)
+          console.log(this.result)
           val = this.result;
+          dfr.resolve(val);
         }
         catch(e) {
+          console.log(e);
           dfr.reject(e);
         }
-        dfr.resolve(val);
+        
       };
       
       reader[method](file);
 
       return dfr;
     },
-    store: function(val, type) {
+    store: function(val, type, key) {
       
       var dfr = new RSVP.Promise();
       
@@ -283,49 +306,50 @@
         var f = new FileReader();
         f.onload = function(on_e) {
           //console.log(on_e.target.result);
-          var key = getFileKey(on_e.target.result, type);
-            fs.root.getFile(key, {create:true}, function(fileEntry) {
-              // Create a FileWriter object for our FileEntry (log.txt).
-              fileEntry.createWriter(function(fileWriter) {
+          key = key || getFileKey(on_e.target.result, type);
+          console.log(key, type, val);
+          fs.root.getFile(key, {create:true}, function(fileEntry) {
+            // Create a FileWriter object for our FileEntry (log.txt).
+            fileEntry.createWriter(function(fileWriter) {
 
-                // apparently writing a file does not clear out the old one first
-                // so if overwriting with a shorter file, it leaves cruft at the end
-                // so truncate first
-                fileWriter.truncate(0);
+              // apparently writing a file does not clear out the old one first
+              // so if overwriting with a shorter file, it leaves cruft at the end
+              // so truncate first
+              fileWriter.truncate(0);
 
-                var truncated = false, 
-                    length;
+              var truncated = false, 
+                  length;
 
-                fileWriter.onwriteend = function(e) {
-                  // but truncate also triggers onwriteend
-                  // so check for that here and re-call the actual write after truncation
-                  if(!truncated) { 
-                    truncated = true;
-                    doWrite(val, fileWriter);
-                  }
-
-
-                  else {
-                    // then only call the success handler on the real write.
-                    // fun, right?
-                    console.log('Write completed.');
-                    dfr.resolve();
-                  }
-                };
-
-                fileWriter.onerror = dfr.reject;
-
-                function doWrite(val, fileWriter) {
-                  var blob = bb.getBlob(type || "image/jpeg")
-                  console.log(blob);
-                  console.log(fileWriter);
-                  fileWriter.write(blob);
+              fileWriter.onwriteend = function(e) {
+                // but truncate also triggers onwriteend
+                // so check for that here and re-call the actual write after truncation
+                if(!truncated) { 
+                  truncated = true;
+                  doWrite(val, fileWriter);
                 }
-              }, function() { dfr.reject(); });
+
+
+                else {
+                  // then only call the success handler on the real write.
+                  // fun, right?
+                  console.log('Write completed.');
+                  dfr.resolve(key);
+                }
+              };
+
+              fileWriter.onerror = dfr.reject;
+
+              function doWrite(val, fileWriter) {
+                var blob = bb.getBlob(type || "image/jpeg")
+                console.log(blob);
+                console.log(fileWriter);
+                fileWriter.write(blob);
+              }
             }, function() { dfr.reject(); });
-          }
-          f.readAsDataURL(bb.getBlob());
+          }, function() { dfr.reject(); });
         }
+        f.readAsDataURL(bb.getBlob());
+      }
       
       
       
@@ -354,7 +378,7 @@
       
       return dfr;
     },
-    listKeys: function(cb) {
+    listKeys: function(filter_metadata) {
       var dfr = new RSVP.Promise();
       
       if(!this.support) { 
@@ -370,6 +394,9 @@
         var readEntries = function() {
            dirReader.readEntries (function(results) {
             if (!results.length) {
+              if(filter_metadata) { 
+                entries = entries.filter(function(key) { return key.name != METADATA_FILE; });
+              }
               dfr.resolve(entries.sort());
             } else {
               entries = entries.concat(toArray(results));
@@ -403,7 +430,105 @@
       });
       
       return dfr;
+    },
+    
+    
+    getFullMetadata: function() {
+      var dfr = new RSVP.Promise();
+
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+      var _this = this;
+      console.log(this);
+      if (this.metadata_cache) {
+        dfr.resolve(this.metadata_cache);
+      }
+      else {
+        console.log(METADATA_FILE);
+        this.getAsBinary(METADATA_FILE).then(function(raw_data) {
+          console.log(raw_data);
+          var json_data = JSON.parse(raw_data || "{}");
+          _this.metadata_cache = json_data;
+          dfr.resolve(_this.metadata_cache);
+        }, function(e) { 
+          console.log(e);
+          if (e && e.code && e.code === FileError.NOT_FOUND_ERR) {
+            _this.metadata_cache = {};
+            return _this.saveMetadata();
+          } else {
+            console.log(e)
+            dfr.reject(e);
+          }
+        }).then(function() {
+          dfr.resolve(_this.metadata_cache);
+        });
+      }
+      return dfr;
+    },
+    getFileMetadata: function(key) {
+      var dfr = new RSVP.Promise();
+
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+      
+      var md_promise = this.getFullMetadata().then(function(data) {
+        dfr.resolve(data[key] || {});
+      }, function(e) { dfr.reject(e); });
+      
+      return dfr;
+      
+    },
+    updateFileMetadata: function(key, metadata) {
+      var dfr = new RSVP.Promise();
+
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+      
+      console.log(key,metadata);;
+      var _this = this;
+      var md_promise = this.getFullMetadata().then(function(data) {
+          data[key] = metadata;
+          return _this.saveMetadata();
+        }, function() { 
+          dfr.reject(); 
+      }).then(function(saved_data) {
+          dfr.resolve(saved_data);
+        }, function() { 
+          dfr.reject();
+      });
+      
+      return dfr;
+    },
+    saveMetadata: function() {
+      var dfr = new RSVP.Promise();
+
+      if(!this.support) { 
+        dfr.reject(); 
+        return dfr;
+      }
+      
+      var _this = this;
+      var md_promise = this.getFullMetadata().then(function(data) {
+          var stringified_data = JSON.stringify(data);
+          return _this.store(stringified_data, "application/json", METADATA_FILE);
+        }, function() { 
+          dfr.reject(); 
+      }).then(function(data) {
+          dfr.resolve(data)
+        }, function() {
+          dfr.reject();
+      });
+      
+      return dfr;
     }
+    
+    
   };
   
   
