@@ -54,12 +54,8 @@
                                   window.webkitStorageInfo ||
                                   window.mozStorageInfo;
                                   
-      window.BlobBuilder        = window.BlobBuilder ||
-                                  window.WebKitBlobBuilder ||
-                                  window.mozBlobBuilder;
                                   
-                                  
-      this.support = !!(window.requestFileSystem && window.StorageInfo && window.BlobBuilder && window.JSON);
+      this.support = !!(window.requestFileSystem && window.StorageInfo && window.JSON);
       this.enabled = false;
       this.checkQuota();
       
@@ -154,7 +150,7 @@
       var _this = this;
           
       this.fetch(src).then(function(xhr) {
-        return _this.store(xhr.response, xhr.getResponseHeader("Content-Type"));
+        return _this.store(new Uint8Array(xhr.response), xhr.getResponseHeader("Content-Type"));
       }).then(function(file_name) {
         dfr.resolve(file_name);
       });
@@ -299,9 +295,11 @@
       var _this = this;
       var onFSLoad = function(fs) { 
         
-        var bb = new BlobBuilder();
-        bb.append(val);
+        //var bb = new BlobBuilder();
+        //bb.append(val);
         var f = new FileReader();
+        var blob = new Blob([val], {type: type || "image/jpeg"});
+        
         f.onload = function(on_e) {
           //console.log(on_e.target.result);
           key = key || getFileKey(on_e.target.result, type);
@@ -337,7 +335,7 @@
               fileWriter.onerror = dfr.reject;
 
               function doWrite(val, fileWriter) {
-                var blob = bb.getBlob(type || "image/jpeg")
+                //var blob = bb.getBlob(type || "image/jpeg")
                 console.log(blob);
                 console.log(fileWriter);
                 fileWriter.write(blob);
@@ -345,7 +343,7 @@
             }, function() { dfr.reject(); });
           }, function() { dfr.reject(); });
         }
-        f.readAsDataURL(bb.getBlob());
+        f.readAsDataURL(blob);
       }
       
       

@@ -14,13 +14,15 @@
       })
       */
       BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
-        console.log(bFile);
-        return bFile.readAsDataUrl();
-      }).then(function(data_url) {
-        console.log("hi");
-          images.appendChild(newT.img({src:data_url}));
-        }, function(e) { console.log("error", e) }
-      );
+        return bFile.readAsDataUrl().then(function(data_url) {
+          console.log("hi");
+            images.appendChild(newT.div(
+              newT.img({src:data_url}),
+              newT.p(JSON.stringify(bFile.data.metadata.toJSON()))
+            ));
+          }, function(e) { console.log("error", e) }
+        );
+      }, function(e) { console.log("error", e)})
       
     }
   });

@@ -136,7 +136,6 @@
         }, function() {
           bf.loaded.reject();
       }).then(function() {
-        console.log("hi")
           loadFile.call(bf, _file_name);
         }, function() {
           bf.loaded.reject();
