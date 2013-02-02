@@ -8,7 +8,9 @@
     ts: {uneditable: true, non_empty:true, default_value: function() { return +new Date(); }},
     shares: {default_value:[], non_empty:true},
     title: {default_value: ""},
-    notes: {default_value: ""}
+    notes: {default_value: ""},
+    height: {default_value: ""},
+    width: {default_value: ""}
   };
 
   function bFileMetadata(data) {

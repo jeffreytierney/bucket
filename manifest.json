@@ -16,16 +16,21 @@
     "persistent": false
   },
   "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "html/popup.html"
+    "default_icon": "icon.png"
   },
   "content_scripts": [
     {
       "matches": [ "http://*/*", "https://*/*" ],
       "js": [ 
-        "js/content_scripts/context_menu.js"
+        "js/vendor/newT.js",
+        "js/content_scripts/context_menu.js",
+        "js/content_scripts/confirmation.js",
+        "js/content_scripts/listeners.js"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "html/iframe.html"
   ],
   "icons": {
     "16": "icon.png"

@@ -2,7 +2,8 @@
   
   var storage_increment = (1024*1024*100), // 100 MB
       cur_quota = 0,
-      METADATA_FILE = "bucket_metadata";
+      METADATA_FILE = "bucket_metadata",
+      USER_FILE     = "bucket_user";
       
   function getFileKey(data, type) {
     return CryptoJS.MD5(data).toString() + getFileExtension(type);
@@ -48,14 +49,21 @@
     _support: function(onSupport, onNoSupport) {
       window.requestFileSystem  = window.requestFileSystem || 
                                   window.webkitRequestFileSystem ||
-                                  window.mozRequestFileSystem;
+                                  window.MozRequestFileSystem ||
+                                  window.MSRequestFileSystem;
                                   
       window.StorageInfo        = window.StorageInfo ||
                                   window.webkitStorageInfo ||
-                                  window.mozStorageInfo;
+                                  window.MozStorageInfo ||
+                                  window.MSStorageInfo;
                                   
+      window.Blob               = window.Blob ||
+                                  window.WebKitBlob ||
+                                  window.MozBlob ||
+                                  window.MSBlob;
+                                 
                                   
-      this.support = !!(window.requestFileSystem && window.StorageInfo && window.JSON);
+      this.support = !!(window.requestFileSystem && window.StorageInfo && window.Blob && window.JSON);
       this.enabled = false;
       this.checkQuota();
       
@@ -413,7 +421,7 @@
            dirReader.readEntries (function(results) {
             if (!results.length) {
               if(filter_metadata) { 
-                entries = entries.filter(function(key) { return key.name != METADATA_FILE; });
+                entries = entries.filter(function(key) { return (key.name != METADATA_FILE && key.name != USER_FILE); });
               }
               dfr.resolve(entries.sort());
             } else {
@@ -459,14 +467,14 @@
         return dfr;
       }
       var _this = this;
-      console.log(this);
+      //console.log(this);
       if (this.metadata_cache) {
         dfr.resolve(this.metadata_cache);
       }
       else {
-        console.log(METADATA_FILE);
+        //console.log(METADATA_FILE);
         this.getAsBinary(METADATA_FILE).then(function(raw_data) {
-          console.log(raw_data);
+          //console.log(raw_data);
           var json_data = JSON.parse(raw_data || "{}");
           _this.metadata_cache = json_data;
           dfr.resolve(_this.metadata_cache);
