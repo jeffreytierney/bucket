@@ -11,11 +11,15 @@
 
   chrome.browserAction.onClicked.addListener(
     function(tab) {
-      chrome.tabs.sendMessage(tab.id, {type: "show_iframe", src:location.origin+"/html/iframe.html"}, function(response) {
-        console.log(response);
-      });
+      showImagesIFrame(tab);
     }
   );
+  
+  function showImagesIFrame(tab) {
+    chrome.tabs.sendMessage(tab.id, {type: "show_iframe", src:location.origin+"/html/iframe.html"}, function(response) {
+      console.log(response);
+    });
+  }
   
   /*
   chrome.extension.onMessage.addListener(
@@ -69,8 +73,11 @@
           page_favicon: tab.favIconUrl,
           page_title: tab.title
         }
+        showLoader();
         var file = BUCKET.File.newFromURI(info.srcUrl, metadata);
         file.loaded.then(function() { // success
+          showImagesIFrame(tab);
+          /*
           file.readAsDataUrl().then(function(data_uri) {              
             chrome.tabs.getSelected(null, function(tab) {
               var file_data = {
@@ -83,13 +90,18 @@
               });
             })
           });
+          */
         }, function() { // error
+          console.log("error");
+          removeLoader();
+          /*
           chrome.tabs.getSelected(null, function(tab) {
             chrome.tabs.sendMessage(tab.id, {image_status: "failure"}, function(response) {
               console.log(response.status);
             });
           });
-        })
+          */
+        });
       }
     }
   ); 
@@ -100,6 +112,15 @@
         updateMetaData(request.file_name, request.update_params, sendResponse)
         return true;
       }
+      if (request.type === "remove_iframe") {
+        removeIFrame();
+        return true;
+      }
+      if (request.type === "swap_iframe_position") {
+        swapIFramePosition();
+        return true;
+      }
+      
     });
     
   // actions
@@ -118,6 +139,37 @@
       sendResponse({ok:false});
     });
 
+  }
+  
+  function removeIFrame() {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendMessage(tab.id, {type: "remove_iframe"}, function(response) {
+        console.log(response.status);
+      });
+    });
+  }
+  function showLoader() {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendMessage(tab.id, {type: "show_loading"}, function(response) {
+        console.log(response.status);
+      });
+    });
+  }
+  
+  function removeLoader() {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendMessage(tab.id, {type: "remove_loading"}, function(response) {
+        console.log(response.status);
+      });
+    });
+  }
+  
+  function swapIFramePosition() {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendMessage(tab.id, {type: "swap_iframe_position"}, function(response) {
+        console.log(response.status);
+      });
+    });
   }
 
 })();

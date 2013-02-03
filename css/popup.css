@@ -1,0 +1,21 @@
+body {
+  width: 400px;
+  height: 400px;
+}
+
+#images {
+  height: 400px;
+  overflow: auto;
+}
+
+#images div {
+  display: inline-block;
+  vertical-align: top;
+  width: 50%;
+  text-align: center;
+}
+
+#images div img {
+  margin: 0 auto;
+  max-width: 95%;
+}

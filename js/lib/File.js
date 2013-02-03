@@ -31,25 +31,25 @@
   function loadFile(file_name) {
     var _this = this;
     BUCKET.fileStore.getFile(file_name).then(function(file_obj) {
-      console.log(file_obj);
+      //console.log(file_obj);
       _this.data.file_name = file_obj.name;
       _this.data.file = file_obj;
       if (!_this.data.metadata) {
-        console.log(_this.data.file_name);
+        //console.log(_this.data.file_name);
         BUCKET.fileStore.getFileMetadata(_this.data.file_name).then(function(metadata) {
-          console.log(metadata);
+          //console.log(metadata);
           _this.data.metadata = new BUCKET.FileMetadata(metadata);
-          console.log(_this);
+          //console.log(_this);
           _this.loaded.resolve(_this);
         }, function(e) {
-          console.log(e);
+          //console.log(e);
           _this.loaded.reject(e);
         });
       } else {
         _this.loaded.resolve(_this);
       }
     }, function(e) { 
-      console.log(e);
+      //console.log(e);
       _this.loaded.reject(e); 
     });
     return _this;
@@ -131,7 +131,7 @@
       BUCKET.fileStore.store(data, mime_type).then(function(file_name) {
           _file_name = file_name
           bf.data.metadata = new BUCKET.FileMetadata(metadata);
-          console.log(bf.data.metadata);
+          //console.log(bf.data.metadata);
           return BUCKET.fileStore.updateFileMetadata(file_name, bf.data.metadata.toJSON());   
         }, function() {
           bf.loaded.reject();

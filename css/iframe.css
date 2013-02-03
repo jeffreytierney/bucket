@@ -1,0 +1,47 @@
+body {
+  background-color: #000;
+  padding-top: 50px;
+}
+
+#links {
+  position: absolute;
+  top: 10px;
+  right: 10px;  
+}
+
+#links a {
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;  
+  font-size: 16px;
+  color: #FFF;
+  border: 1px solid #FFF;
+  text-decoration: none;
+  text-align: center;
+  margin-left: 10px;
+}
+
+#close_iframe {
+  width: 30px;
+}
+
+#toggle_position {
+  padding: 0 10px;
+}
+
+#images {
+  height: 200px;
+  overflow: auto;
+}
+
+#images div {
+  display: inline-block;
+  vertical-align: top;
+  width: 250px;
+  text-align: center;
+}
+
+#images div img {
+  margin: 0 auto;
+  max-width: 95%;
+}

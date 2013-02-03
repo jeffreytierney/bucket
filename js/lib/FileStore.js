@@ -78,7 +78,9 @@
     },
     checkQuota: function(success, error) {
       success = success || function(usage, quota) { this.enabled = !!quota; };
-      error   = error   || function(ex) { console.log("Error checking quota: ", ex.message); };
+      error   = error   || function(ex) { 
+        //console.log("Error checking quota: ", ex.message); 
+      };
       if(!this.support) {
         error.call(window, {});
       }
@@ -121,7 +123,10 @@
       var _this = this;
       dfr.then(
         function(bytes_granted) { _this.support = true;  },
-        function(ex) { this.support = false; console.log("Error requesting storage: ", ex.message); }
+        function(ex) { 
+          this.support = false; 
+          //console.log("Error requesting storage: ", ex.message); 
+        }
       );
       
       window.StorageInfo.requestQuota(window.PERSISTENT, bytes, dfr.resolve, function() { dfr.reject(); });
@@ -221,18 +226,18 @@
         return dfr;
       }
       
-      console.log(key)
+      //console.log(key)
       var _this = this;
       this.get(key).then(function(file) {
-          console.log(file);
+          //console.log(file);
           return _this.readFileAs(file, "BINARY");
         }, function(e) { 
-          console.log(e.message);
+          //console.log(e.message);
           dfr.reject(e);
       }).then(function(val) {
           dfr.resolve(val);
         }, function(e) {
-          console.log(e.message);
+          //console.log(e.message);
           dfr.reject(e);
       });
       
@@ -260,7 +265,7 @@
       return dfr;
     },
     readFileAs: function(file, data_type) {
-      console.log(file);
+      //console.log(file);
       var dfr = new RSVP.Promise();
       
       if(!this.support) { 
@@ -281,7 +286,7 @@
           dfr.resolve(val);
         }
         catch(e) {
-          console.log(e);
+          //console.log(e);
           dfr.reject(e);
         }
         
@@ -335,7 +340,7 @@
                 else {
                   // then only call the success handler on the real write.
                   // fun, right?
-                  console.log('Write completed.');
+                  //console.log('Write completed.');
                   dfr.resolve(key);
                 }
               };
@@ -344,8 +349,8 @@
 
               function doWrite(val, fileWriter) {
                 //var blob = bb.getBlob(type || "image/jpeg")
-                console.log(blob);
-                console.log(fileWriter);
+                //console.log(blob);
+                //console.log(fileWriter);
                 fileWriter.write(blob);
               }
             }, function() { dfr.reject(); });
@@ -373,7 +378,7 @@
 
           fileEntry.remove(function() {
             dfr.resolve();
-            console.log('File removed.');
+            //console.log('File removed.');
           }, function() { dfr.reject(); });
 
         }, function() { dfr.reject(); });
@@ -395,10 +400,10 @@
         }, function(e) {
           return _this.removeFileMetadata(key);
       }).then(function() {
-        console.log("removed metadata")
+        //console.log("removed metadata")
           dfr.resolve(key);
         }, function(e) {
-          console.log(e)
+          //console.log(e)
           dfr.reject(e);
       })
 
@@ -437,6 +442,37 @@
       
       window.requestFileSystem(window.PERSISTENT, cur_quota, onInitFs, function() { dfr.reject(); });
       return dfr;
+    },
+    getSortedFiles: function(sort_key, order) {
+      sort_key = sort_key || "ts";
+      order = order || "desc";
+      var ret_a = 1, ret_b = -1;
+      if(order.toLowerCase === "desc") {
+        ret_a = -1;
+        ret_b = 1;
+      }
+      var lk_promise = BUCKET.fileStore.listKeys(true),
+          sorted_files_promise = new RSVP.Promise(),
+          files = [];
+
+      lk_promise.then(function(keys) { 
+        for (var i=0; len=keys.length, i<len; i++) { 
+          BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
+            files.push(bFile);
+            if(files.length === keys.length) {
+              console.log(files)
+              files.sort(function(a,b) {
+                return a.data.metadata.get(sort_key) < b.data.metadata.get(sort_key) ? ret_a : ret_b;  
+              })
+              sorted_files_promise.resolve(files);
+            }
+          }, function(e) { 
+            //console.log("error", e)
+          })
+      
+        }
+      });
+      return sorted_files_promise;
     },
     clear: function() {
       var dfr = new RSVP.Promise();
@@ -479,12 +515,12 @@
           _this.metadata_cache = json_data;
           dfr.resolve(_this.metadata_cache);
         }, function(e) { 
-          console.log(e);
+          //console.log(e);
           if (e && e.code && e.code === FileError.NOT_FOUND_ERR) {
             _this.metadata_cache = {};
             return _this.saveMetadata();
           } else {
-            console.log(e)
+            //console.log(e)
             dfr.reject(e);
           }
         }).then(function() {
@@ -516,7 +552,7 @@
         return dfr;
       }
       
-      console.log(key,metadata);;
+      //console.log(key,metadata);;
       var _this = this;
       var md_promise = this.getFullMetadata().then(function(data) {
           data[key] = metadata;
@@ -539,7 +575,7 @@
         return dfr;
       }
       
-      console.log(key);
+      //console.log(key);
       var _this = this;
       var md_promise = this.getFullMetadata().then(function(data) {
           delete data[key];

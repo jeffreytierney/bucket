@@ -26,6 +26,9 @@
         "js/content_scripts/context_menu.js",
         "js/content_scripts/confirmation.js",
         "js/content_scripts/listeners.js"
+      ],
+      "css": [
+        "css/content_scripts/iframe.css"
       ]
     }
   ],
