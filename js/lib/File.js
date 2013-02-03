@@ -20,6 +20,9 @@
     readAsBinary: function() {
       return BUCKET.fileStore.readFileAs(this.data.file, "BINARY");
     },
+    getFileEntryUrl: function() {
+      
+    },
     loadFile: function(name) {
       return loadFile.call(this, name);
     }
@@ -30,10 +33,11 @@
   /* FUNCTION TO ACTUALLY DO HEAVY LIFTING OF LOADING A FILE */
   function loadFile(file_name) {
     var _this = this;
-    BUCKET.fileStore.getFile(file_name).then(function(file_obj) {
-      //console.log(file_obj);
-      _this.data.file_name = file_obj.name;
-      _this.data.file = file_obj;
+    BUCKET.fileStore.getFile(file_name, true).then(function(file_obj) {
+      console.log(file_obj);
+      _this.data.file_name = file_obj.file.name;
+      _this.data.file = file_obj.file;
+      _this.data.file_entry = file_obj.file_entry;
       if (!_this.data.metadata) {
         //console.log(_this.data.file_name);
         BUCKET.fileStore.getFileMetadata(_this.data.file_name).then(function(metadata) {

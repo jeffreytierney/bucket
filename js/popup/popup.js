@@ -10,7 +10,7 @@
 
       BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
         images.appendChild(newT.div(
-          newT.img({src:window.URL.createObjectURL(bFile.data.file)})
+          newT.img({src:bFile.data.file_entry.toURL()})
         ));
         
         /*

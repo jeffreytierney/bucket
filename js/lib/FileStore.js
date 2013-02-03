@@ -172,8 +172,8 @@
       return dfr;
 
     },
-    getFile: function(key) {
-      return this.get(key);
+    getFile: function(key, with_file_entry) {
+      return this.get(key, with_file_entry);
     },
     getFileEntry: function(key) {
       var dfr = new RSVP.Promise();
@@ -196,7 +196,7 @@
       
       return dfr;
     },
-    get: function(key) {
+    get: function(key, with_file_entry) {
       var dfr = new RSVP.Promise();
       
       if(!this.support) { 
@@ -210,7 +210,14 @@
           // Get a File object representing the file,
           // then use FileReader to read its contents.
           fileEntry.file(function(file) {
-             dfr.resolve(file);
+             var ret = file;
+             if(with_file_entry) {
+               ret = {
+                 file: file,
+                 file_entry: fileEntry
+               }
+             }
+             dfr.resolve(ret);
           }, function(e) { dfr.reject(e); });
         }, function(e) { dfr.reject(e); });
       }
@@ -474,6 +481,7 @@
       });
       return sorted_files_promise;
     },
+    
     clear: function() {
       var dfr = new RSVP.Promise();
       

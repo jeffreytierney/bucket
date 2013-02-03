@@ -25,7 +25,7 @@
   sf_promise.then(function(files) {
     for (var i=0; len=files.length, i<len; i++) { 
       images.appendChild(newT.div(
-        newT.img({src:window.URL.createObjectURL(files[i].data.file)})
+        newT.img({src:files[i].data.file_entry.toURL()})
       ));
     }
   }, function(e) { console.log("error", e)});
