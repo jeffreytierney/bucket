@@ -47,6 +47,20 @@
       console.log(response);
     });
   }, false);
+  
+  $("#images").on("click", function(e) {
+    
+    var $tgt = $(e.target);
+    if($tgt.is("a.delete")) {
+      e.preventDefault();
+      var parent = $tgt.closest("div"),
+          key = $tgt.data("file_name");
+          
+      chrome.extension.sendMessage({type:"delete_image", key:key}, function(response) {
+        parent.remove();
+      });
+    }
+  });
 
   var images = document.getElementById("images"),
       sf_promise = BUCKET.fileStore.getSortedFiles(),
@@ -56,7 +70,8 @@
   sf_promise.then(function(files) {
     for (var i=0; len=files.length, i<len; i++) {
       images.appendChild(newT.div(
-        newT.img({src:files[i].data.file_entry.toURL()})
+        newT.img({src:files[i].data.file_entry.toURL()}),
+        newT.a({href:"#", clss:"delete", "data-file_name":files[i].data.file_name}, "X")
       ));
     }
   }, function(e) { console.log("error", e)});

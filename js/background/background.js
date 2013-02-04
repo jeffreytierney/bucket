@@ -129,7 +129,10 @@
         swapIFramePosition();
         return true;
       }
-      
+      if (request.type === "delete_image") {
+        deleteImage(request.key, sendResponse);
+        return true;
+      }
     });
     
   // actions
@@ -206,6 +209,12 @@
         console.log(response);
       });
     });
+  }
+  
+  function deleteImage(key, sendResponse) {
+    BUCKET.fileStore.remove(key).then(function() {
+      sendResponse({removed: key});
+    })
   }
 
 })();
