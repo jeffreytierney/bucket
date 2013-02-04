@@ -166,7 +166,7 @@
   
   function openInNewWindow() {
     removeIFrame();
-    chrome.windows.create({'url': chrome.extension.getURL("/html/images.html")}, function(window) {});
+    chrome.windows.create({'url': chrome.extension.getURL("/html/images.html"), type:"popup"}, function(window) {});
   }
   
   function removeIFrame() {
