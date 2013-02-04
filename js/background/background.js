@@ -11,15 +11,10 @@
 
   chrome.browserAction.onClicked.addListener(
     function(tab) {
-      showImagesIFrame(tab);
+      showIFrame(tab);
     }
   );
   
-  function showImagesIFrame(tab) {
-    chrome.tabs.sendMessage(tab.id, {type: "show_iframe", src:location.origin+"/html/iframe.html"}, function(response) {
-      console.log(response);
-    });
-  }
   
   /*
   chrome.extension.onMessage.addListener(
@@ -76,7 +71,12 @@
         showLoader();
         var file = BUCKET.File.newFromURI(info.srcUrl, metadata);
         file.loaded.then(function() { // success
-          showImagesIFrame(tab);
+          file.readAsDataUrl().then(function(data_uri) {       
+            getFileDimensions({
+              image_file_name: file.data.file_name,
+              image_file_data_uri: data_uri
+            })
+          });
           /*
           file.readAsDataUrl().then(function(data_uri) {              
             chrome.tabs.getSelected(null, function(tab) {
@@ -112,8 +112,17 @@
         updateMetaData(request.file_name, request.update_params, sendResponse)
         return true;
       }
+      if(request.type === "image_save_complete") {
+        chrome.tabs.getSelected(null, function(tab) {
+          showIFrame(tab, request.file_name);
+        });
+      }
       if (request.type === "remove_iframe") {
         removeIFrame();
+        return true;
+      }
+      if (request.type === "open_in_new_window") {
+        openInNewWindow();
         return true;
       }
       if (request.type === "swap_iframe_position") {
@@ -141,17 +150,36 @@
 
   }
   
+  function showIFrame(tab, saved_image) {
+    var params = {
+        type: "show_iframe", 
+        src:chrome.extension.getURL("/html/images.html?iframe=true")
+      };
+      
+    if(saved_image) {
+      params.saved_image = saved_image;
+    }
+    chrome.tabs.sendMessage(tab.id, params, function(response) {
+      console.log(response);
+    });
+  }
+  
+  function openInNewWindow() {
+    removeIFrame();
+    chrome.windows.create({'url': chrome.extension.getURL("/html/images.html")}, function(window) {});
+  }
+  
   function removeIFrame() {
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.sendMessage(tab.id, {type: "remove_iframe"}, function(response) {
-        console.log(response.status);
+        console.log(response);
       });
     });
   }
   function showLoader() {
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.sendMessage(tab.id, {type: "show_loading"}, function(response) {
-        console.log(response.status);
+        console.log(response);
       });
     });
   }
@@ -159,7 +187,7 @@
   function removeLoader() {
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.sendMessage(tab.id, {type: "remove_loading"}, function(response) {
-        console.log(response.status);
+        console.log(response);
       });
     });
   }
@@ -167,7 +195,15 @@
   function swapIFramePosition() {
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.sendMessage(tab.id, {type: "swap_iframe_position"}, function(response) {
-        console.log(response.status);
+        console.log(response);
+      });
+    });
+  }
+  
+  function getFileDimensions(obj) {
+    chrome.tabs.getSelected(null, function(tab) {
+      chrome.tabs.sendMessage(tab.id, {type: "get_image_dimensions", file_obj:obj}, function(response) {
+        console.log(response);
       });
     });
   }

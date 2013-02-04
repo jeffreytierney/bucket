@@ -5,7 +5,6 @@
       
       
   lk_promise.then(function(keys) { 
-    console.log(keys);
     for (var i=0; len=keys.length, i<len; i++) { 
 
       BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {

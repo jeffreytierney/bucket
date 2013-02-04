@@ -10,10 +10,50 @@
   function removeIFrame() {
     removeEl("_bucket_iframe");
   }
+  
   function removeLoader() {
     removeEl("_bucket_loader")
   }
   
+  function getImageDimensions(file_obj) {
+    var img = newT.img({
+      id:"bucket_img", 
+      src:file_obj.image_file_data_uri, 
+      style:"position:absolute; top:-99999px; left:-99999px;"
+    });
+    
+    var reportParams = function() {
+      console.log("reporting", img.height, img.width);
+      if(!img.height && !img.width) {
+        setTimeout(function() {
+          reportParams();
+        }, 50);
+        return;
+      }
+      
+      var image_size_params = {
+        type: "update_metadata",
+        file_name: file_obj.image_file_name,
+        update_params: {
+          height: img.height,
+          width: img.width
+        }
+      };
+      
+      chrome.extension.sendMessage(image_size_params, function(response) {
+        chrome.extension.sendMessage({type:"image_save_complete", file_name:file_obj.image_file_name}, function(response) {
+          console.log(response);
+        });
+      });
+    }
+
+    document.body.appendChild(img);
+
+    setTimeout(function() {
+      reportParams();
+    }, 50);
+
+  }
   
   function showLoader() {
     if(!document.getElementById("_bucket_loader")) {
@@ -52,6 +92,9 @@
     function(request, sender, sendResponse) {
       if (request.type === "show_loading") {
         showLoader()
+      }
+      if (request.type === "get_image_dimensions") {
+        getImageDimensions(request.file_obj)
       }
       if (request.type === "remove_loading") {
         removeLoader()

@@ -4,9 +4,14 @@ body {
 }
 
 #links {
+  display: none;
   position: absolute;
   top: 10px;
   right: 10px;  
+}
+
+body.iframe #links {
+  display: block;
 }
 
 #links a {
@@ -19,19 +24,19 @@ body {
   text-decoration: none;
   text-align: center;
   margin-left: 10px;
+   padding: 0 10px;
 }
 
 #close_iframe {
   width: 30px;
-}
-
-#toggle_position {
-  padding: 0 10px;
+  padding: 0;
 }
 
 #images {
+  /*
   height: 200px;
   overflow: auto;
+  */
 }
 
 #images div {

@@ -33,7 +33,7 @@
     }
   ],
   "web_accessible_resources": [
-    "html/iframe.html"
+    "html/images.html"
   ],
   "icons": {
     "16": "icon.png"
