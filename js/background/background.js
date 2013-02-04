@@ -11,7 +11,7 @@
 
   chrome.browserAction.onClicked.addListener(
     function(tab) {
-      showIFrame(tab);
+      openInNewWindow();
     }
   );
   
