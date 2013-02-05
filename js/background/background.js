@@ -146,6 +146,10 @@
         deleteImage(request.key, sendResponse);
         return true;
       }
+      if (request.type === "save_window_dimensions") {
+        saveWindowDimensions(request.dims);
+        return true;
+      }
     });
     
   // actions
@@ -191,8 +195,11 @@
       if(saved_image) {
         openSaveForm(extension_tab, saved_image);
       }
-    } else {    
-      chrome.windows.create({'url': chrome.extension.getURL("/html/images.html"), type:"popup"}, function(window) {
+    } else {
+      var window_params = getWindowDimensions();
+      window_params.url = chrome.extension.getURL("/html/images.html");
+      window_params.type = "popup";
+      chrome.windows.create(window_params, function(window) {
         extension_window = window;
         extension_tab = window.tabs[0];
         if(saved_image) {
@@ -254,6 +261,18 @@
     BUCKET.fileStore.remove(key).then(function() {
       sendResponse({removed: key});
     })
+  }
+  
+  function saveWindowDimensions(dims) {
+    var settings = JSON.parse(localStorage.getItem("settings") || "{}");
+    settings.window_dims = dims || {};
+    localStorage.setItem("settings", JSON.stringify(settings));
+  }
+  
+  function getWindowDimensions() {
+    var settings = JSON.parse(localStorage.getItem("settings") || "{}");
+    return settings.window_dims || {};
+
   }
 
 })();

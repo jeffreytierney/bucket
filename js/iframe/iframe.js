@@ -16,6 +16,26 @@
 
     }
   );
+  
+  (function() { 
+    var t; 
+    $(window).bind("resize", function(e) { 
+      clearTimeout(t); 
+      t = setTimeout(function() {
+      chrome.extension.sendMessage({
+        type:"save_window_dimensions",
+        dims: {
+          height: $(this).height(), 
+          width: $(this).width()
+        }
+      }, function(response) {
+        console.log(response);
+      });
+
+      }, 500)  
+    }) 
+  })();
+  
 /*
   var queryStringToHash = function(str) {
       str = str || location.href;
