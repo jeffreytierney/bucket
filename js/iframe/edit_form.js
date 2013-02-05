@@ -58,7 +58,7 @@
         newT.fieldset(
           newT.label("Title:", newT.input({id:"file_title", clss:"text", value:metadata.get("title")})),
           newT.label("Notes:", newT.textarea({id:"file_notes"}, metadata.get("notes"))),
-          newT.label("Height: ", newT.strong(metadata.get("height")), " Width:", newT.strong(metadata.get("width"))),
+          newT.label("Height: ", newT.strong(metadata.get("height")), " Width: ", newT.strong(metadata.get("width"))),
           newT.label("Original Url: ", newT.strong({title:metadata.get("original_url")}, metadata.get("original_url"))),
           newT.label("Saved From: ", newT.strong({title: metadata.get("page_url")}, metadata.get("page_url"))),
           newT.label("Saved On: ", newT.strong(new Date(metadata.get("ts")))),
