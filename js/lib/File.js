@@ -41,7 +41,7 @@
       if (!_this.data.metadata) {
         //console.log(_this.data.file_name);
         BUCKET.fileStore.getFileMetadata(_this.data.file_name).then(function(metadata) {
-          //console.log(metadata);
+          console.log(metadata);
           _this.data.metadata = new BUCKET.FileMetadata(metadata);
           //console.log(_this);
           _this.loaded.resolve(_this);

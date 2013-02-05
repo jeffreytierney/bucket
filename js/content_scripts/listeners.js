@@ -98,6 +98,7 @@
       }
       if (request.type === "remove_loading") {
         removeLoader()
+        return sendResponse({ok:true});
       }
       if (request.type === "show_iframe") {
         showIFrame(request.src);

@@ -1,8 +1,62 @@
-body {
-  background-color: #000;
-  padding-top: 50px;
+/*  RESETS   */
+
+ html, body {height: 100%;}
+ * { padding:0; margin:0; }
+ body {
+     position:relative;
+     background-color: #000;
+     font-size: 12px;
+     font-family: Arial, Verdana, sans-serif;
+     color: #FFF;
+     
+ }
+ h1,h2,h3,h4,h5,h6,input,select,option,textarea {
+     font-size: 12px;
+     font-family: Arial, Verdana, sans-serif;
+ }
+ ul {
+     list-style:none;
+ }
+ img {
+     border:0;
+ }
+ .hr { clear:both; float:none; }
+ .hr hr { display:none; }
+ a {
+     text-decoration:none;
+ }
+
+
+ fieldset {
+   border-width: 0;
+   margin: 0;
+   padding: 0;
+ }
+
+ textarea {
+   resize: none;
+ }
+ 
+ /* end resets  */
+
+
+.clearfix {
+  display: block;
+  &:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
 }
 
+body {
+  padding: 20px;
+}
+
+/*
 #links {
   display: none;
   position: absolute;
@@ -14,7 +68,8 @@ body.iframe #links {
   display: block;
 }
 
-#links a {
+#links a,
+#file_save_form_close {
   display: inline-block;
   height: 30px;
   line-height: 30px;  
@@ -24,20 +79,18 @@ body.iframe #links {
   text-decoration: none;
   text-align: center;
   margin-left: 10px;
-   padding: 0 10px;
+  padding: 0 10px;
 }
 
 #close_iframe {
   width: 30px;
   padding: 0;
 }
-
 #images {
-  /*
   height: 200px;
   overflow: auto;
-  */
 }
+*/
 
 #images div {
   display: inline-block;
@@ -45,22 +98,59 @@ body.iframe #links {
   width: 250px;
   text-align: center;
   position: relative;
+  color: #FFF;
+  margin: 20px;
 }
 
+#images div strong {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+#images div span,
+#images div p {
+  font-size: 10px;
+  line-height: 12px;
+}
+
+#images div .url {
+  width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#images div strong, 
+#images div span {
+  display: block;
+}
+
+#images div a.edit,
 #images div a.delete {
   position: absolute;
   top: -6px;
-  right: -6px;
   background-color: rgba(100,100,100,.5);
   color: #FFF;
   border: 2px solid #FFF;
   text-decoration: none;
   z-index: 2;
-  width: 20px;
-  height: 20px;
   border-radius: 10px;
   display: none;
+  height: 20px;
+  line-height: 20px;
 }
+
+#images div a.delete {
+  right: -6px;
+  width: 20px;
+}
+
+#images div a.edit {
+  right: 30px;
+  padding: 0 10px;
+}
+
+#images div:hover a.edit,
 #images div:hover a.delete {
   display: block;
 }
@@ -69,4 +159,68 @@ body.iframe #links {
   margin: 0 auto;
   max-width: 95%;
   z-index:1;
+}
+
+#file_save_form {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: #FFF;
+  
+  background-color: rgba(0,0,0,0.8);
+}
+
+#file_save_form .text,
+#file_save_form textarea {
+  font-size: 14px;
+  padding: 2px 5px;
+  width: 250px;
+}
+
+#file_save_form_close {
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;  
+  font-size: 16px;
+  color: #FFF;
+  border: 1px solid #FFF;
+  text-decoration: none;
+  text-align: center;
+  margin-left: 10px;
+  padding: 0 10px;
+  position: absolute;
+  top: 20px;
+  right: 20px;  
+}
+
+#file_form_image_container,
+#file_save_form fieldset {
+  float: left;
+}
+
+#file_form_image_container {
+  padding: 20px 50px;
+  margin-right: 20px;
+  text-align: center;
+}
+
+#file_form_image_container img {
+  max-width: 300px;
+}
+
+#file_save_form label,
+#file_save_form input.text,
+#file_save_form textarea {
+  display: block;
+  margin: 5px 0;
+}
+
+#file_save_form label strong {
+  display: inline-block;
+  max-width: 500px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

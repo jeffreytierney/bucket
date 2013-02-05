@@ -124,7 +124,10 @@
       }
       if(request.type === "image_save_complete") {
         chrome.tabs.getSelected(null, function(tab) {
-          showIFrame(tab, request.file_name);
+          //showIFrame(tab, request.file_name);
+          removeLoader(function() {
+            openInNewWindow(request.file_name);
+          });
         });
       }
       if (request.type === "remove_iframe") {
@@ -149,6 +152,7 @@
     
   function updateMetaData(file_name, update_params, sendResponse) {
     BUCKET.fileStore.getFileMetadata(file_name).then(function(metadata) {
+      console.log(update_params, metadata);
       var file_metadata = new BUCKET.FileMetadata(metadata);
       for(var param in update_params) {
         file_metadata.set(param, update_params[param]);
@@ -177,19 +181,31 @@
     });
   }
   
-  function openInNewWindow() {
+  function openInNewWindow(saved_image) {
     removeIFrame();
     if(extension_window && extension_tab) {
       chrome.tabs.sendMessage(extension_tab.id, {type: "reload_images"}, function(response) {
         console.log(response);
       });
       chrome.windows.update(extension_window.id, {focused:true}, function () {})
+      if(saved_image) {
+        openSaveForm(extension_tab, saved_image);
+      }
     } else {    
       chrome.windows.create({'url': chrome.extension.getURL("/html/images.html"), type:"popup"}, function(window) {
         extension_window = window;
         extension_tab = window.tabs[0];
+        if(saved_image) {
+        openSaveForm(extension_tab, saved_image);
+      }
       });
     }
+  }
+  
+  function openSaveForm(tab, key) {
+    chrome.tabs.sendMessage(tab.id, {type:"open_save_form", key:key}, function(response) {
+      console.log(response);
+    });
   }
   
   function removeIFrame() {
@@ -207,10 +223,13 @@
     });
   }
   
-  function removeLoader() {
+  function removeLoader(cb) {
     chrome.tabs.getSelected(null, function(tab) {
       chrome.tabs.sendMessage(tab.id, {type: "remove_loading"}, function(response) {
-        console.log(response);
+        if(cb && typeof cb === "function") {
+          cb.call();
+        }
+        //console.log(response);
       });
     });
   }
