@@ -162,7 +162,7 @@ body.iframe #links {
 }
 
 #file_save_form {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
