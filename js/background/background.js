@@ -1,5 +1,8 @@
 (function() {
 
+  var extension_window,
+      extension_tab;
+
   chrome.contextMenus.removeAll();
   var menu_item = chrome.contextMenus.create({
     "title": "Save image to bucket",
@@ -14,6 +17,13 @@
       openInNewWindow();
     }
   );
+  
+  chrome.windows.onRemoved.addListener(function(window_id) {
+    if(extension_window && window_id === extension_window.id) {
+      extension_window = null;
+      extension_tab = null;          
+    }
+  });
   
   
   /*
@@ -169,7 +179,17 @@
   
   function openInNewWindow() {
     removeIFrame();
-    chrome.windows.create({'url': chrome.extension.getURL("/html/images.html"), type:"popup"}, function(window) {});
+    if(extension_window && extension_tab) {
+      chrome.tabs.sendMessage(extension_tab.id, {type: "reload_images"}, function(response) {
+        console.log(response);
+      });
+      chrome.windows.update(extension_window.id, {focused:true}, function () {})
+    } else {    
+      chrome.windows.create({'url': chrome.extension.getURL("/html/images.html"), type:"popup"}, function(window) {
+        extension_window = window;
+        extension_tab = window.tabs[0];
+      });
+    }
   }
   
   function removeIFrame() {

@@ -1,4 +1,11 @@
 (function() {
+  chrome.extension.onMessage.addListener(
+    function(request, sender, sendResponse) {
+      if (request.type === "reload_images") {
+        loadImages();
+      }
+    }
+  );
 
   var queryStringToHash = function(str) {
       str = str || location.href;
@@ -24,29 +31,26 @@
     document.body.className = document.body.className + " iframe";
   }
 
-  var close_x = document.getElementById("close_iframe");
-  close_x.addEventListener("click", function(e) {
+  $("#close_iframe").on("click", function(e) {
     e.preventDefault();
     chrome.extension.sendMessage({type:"remove_iframe"}, function(response) {
       console.log(response);
     });
   }, false);
   
-  var swap_iframe_pos = document.getElementById("swap_position");
-  swap_iframe_pos.addEventListener("click", function(e) {
+  $("#swap_position").on("click", function(e) {
     e.preventDefault();
     chrome.extension.sendMessage({type:"swap_iframe_position"}, function(response) {
       console.log(response);
     });
   }, false);
   
-  var open_in_new_window = document.getElementById("pop_out");
-  open_in_new_window.addEventListener("click", function(e) {
+  $("#pop_out").on("click", function(e) {
     e.preventDefault();
     chrome.extension.sendMessage({type:"open_in_new_window"}, function(response) {
       console.log(response);
     });
-  }, false);
+  });
   
   $("#images").on("click", function(e) {
     
@@ -62,20 +66,22 @@
     }
   });
 
-  var images = document.getElementById("images"),
-      sf_promise = BUCKET.fileStore.getSortedFiles(),
-      get_url_promise;
-      
-      
-  sf_promise.then(function(files) {
-    for (var i=0; len=files.length, i<len; i++) {
-      images.appendChild(newT.div(
-        newT.img({src:files[i].data.file_entry.toURL()}),
-        newT.a({href:"#", clss:"delete", "data-file_name":files[i].data.file_name}, "X")
-      ));
-    }
-  }, function(e) { console.log("error", e)});
-  
 
+  function loadImages() {
+    var images = document.getElementById("images"),
+    sf_promise = BUCKET.fileStore.getSortedFiles(),
+    get_url_promise;
+    $(images).empty();
+    sf_promise.then(function(files) {
+      for (var i=0; len=files.length, i<len; i++) {
+        images.appendChild(newT.div(
+          newT.img({src:files[i].data.file_entry.toURL()}),
+          newT.a({href:"#", clss:"delete", "data-file_name":files[i].data.file_name}, "X")
+        ));
+      }
+    }, function(e) { console.log("error", e)});
+  }
+  
+  loadImages();
   
 })();

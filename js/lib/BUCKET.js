@@ -1,3 +1,5 @@
 (function() {
-  window.BUCKET = {};
+  window.BUCKET = {
+    util: {}
+  };
 })();
