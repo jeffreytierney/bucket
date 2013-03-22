@@ -164,8 +164,8 @@
           
       this.fetch(src).then(function(xhr) {
         return _this.store(new Uint8Array(xhr.response), xhr.getResponseHeader("Content-Type"));
-      }).then(function(file_name) {
-        dfr.resolve(file_name);
+      }).then(function(file_details) {
+        dfr.resolve(file_details);
       });
       
       
@@ -348,7 +348,7 @@
                   // then only call the success handler on the real write.
                   // fun, right?
                   //console.log('Write completed.');
-                  dfr.resolve(key);
+                  dfr.resolve({key:key,type:type,size:blob.size});
                 }
               };
 

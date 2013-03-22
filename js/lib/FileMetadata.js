@@ -10,7 +10,9 @@
     title: {default_value: ""},
     notes: {default_value: ""},
     height: {default_value: ""},
-    width: {default_value: ""}
+    width: {default_value: ""},
+    mime_type: {default_value: ""},
+    size: {default_value: 0}
   };
 
   function bFileMetadata(data) {
@@ -51,11 +53,11 @@
       // if not whitelisted, just skip it
       if (!default_obj) { return; }
       // set default if empty and there is a default
-      if(!val && default_obj.default_value) { val = (typeof default_obj.default_value === "function" ? default_obj.default_value() : default_obj.default_value); }
+      if(!val && "default_value" in default_obj) { val = (typeof default_obj.default_value === "function" ? default_obj.default_value() : default_obj.default_value); }
       // if still empty, and cant be empty, throw an error
       if(default_obj.non_empty && !val) { throw new Exception("Metadata item: " + key + " can not be empty"); }
       // if a value previously existed (even if null), and the new one is different, and it is not editable, throw an error
-      if(this.data.hasOwnProperty(key) && default_obj.uneditable && val != this.get(key)) { throw new Exception("Metadata item: " + key + " can not be edited"); }
+      if(this.data.hasOwnProperty(key) && default_obj.uneditable && val != this.get(key)) { throw new Error("Metadata item: " + key + " can not be edited"); }
       
       
       // finally, just set it and forget it.

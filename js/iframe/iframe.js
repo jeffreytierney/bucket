@@ -106,8 +106,9 @@
 
   function loadImages() {
     var images = document.getElementById("images"),
-    sf_promise = BUCKET.bg_page.BUCKET.fileStore.getSortedFiles(),
-    get_url_promise;
+        sf_promise = BUCKET.bg_page.BUCKET.fileStore.getSortedFiles(),
+        get_url_promise;
+        
     $(images).empty();
     sf_promise.then(function(files) {
       for (var i=0; len=files.length, i<len; i++) {

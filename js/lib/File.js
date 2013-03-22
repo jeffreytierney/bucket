@@ -99,23 +99,25 @@
     metadata.original_url = url;
     var bf = new bFile();
     
-    var _file_name;
-    BUCKET.fileStore.fetchAndStore(url).then(function(file_name) {
-        _file_name = file_name;
-        return BUCKET.fileStore.getFileMetadata(file_name);
+    var _file_details;
+    BUCKET.fileStore.fetchAndStore(url).then(function(file_details) {
+        _file_details = file_details;
+        return BUCKET.fileStore.getFileMetadata(_file_details.key);
       }, function() {
         bf.loaded.reject();
     }).then(function(found_metadata) {
         if(found_metadata && found_metadata.ts) {
           metadata = found_metadata;
         }
+        metadata["mime_type"] = _file_details.type;
+        metadata["size"] = _file_details.size;
         bf.data.metadata = new BUCKET.FileMetadata(metadata);
-        return BUCKET.fileStore.updateFileMetadata(_file_name, bf.data.metadata.toJSON());
+        return BUCKET.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());
 
       }, function() {
         bf.loaded.reject();
     }).then(function() {
-        loadFile.call(bf, _file_name);
+        loadFile.call(bf, _file_details.key);
       }, function() {
         bf.loaded.reject();
     });
@@ -139,23 +141,25 @@
       var mime_type = matches[1],
           data = convertToArrayBuffer(matches[2]);
       
-      var _file_name;
-      BUCKET.fileStore.store(data, mime_type).then(function(file_name) {
-          _file_name = file_name
-          return BUCKET.fileStore.getFileMetadata(file_name);
+      var _file_details;
+      BUCKET.fileStore.store(data, mime_type).then(function(file_details) {
+          _file_details = file_details
+          return BUCKET.fileStore.getFileMetadata(_file_details.key);
         }, function() {
           bf.loaded.reject();
       }).then(function(found_metadata) {
           if(found_metadata && found_metadata.ts) {
             metadata = found_metadata;
           }
+          metadata["mime_type"] = _file_details.type;
+          metadata["size"] = _file_details.size;
           bf.data.metadata = new BUCKET.FileMetadata(metadata);
-          return BUCKET.fileStore.updateFileMetadata(_file_name, bf.data.metadata.toJSON());   
+          return BUCKET.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());   
           
         }, function() {
           bf.loaded.reject();
       }).then(function() {
-          loadFile.call(bf, _file_name);
+          loadFile.call(bf, _file_details.key);
         }, function() {
             bf.loaded.reject();
       });
