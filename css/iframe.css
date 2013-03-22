@@ -118,10 +118,12 @@ body.iframe #links {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #FFF;
 }
 
 #images div strong, 
-#images div span {
+#images div span,
+#images div .url {
   display: block;
 }
 

@@ -123,10 +123,10 @@
         newT.img({src:file.data.file_entry.toURL()}),
         (md.get("title") ? 
           newT.strong({clss:"title"}, md.get("title")) : 
-          newT.strong({clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, ""))
+          newT.a({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, ""))
         ),
         (md.get("notes") ? newT.p(md.get("notes")) : ""),
-        (md.get("title") ? newT.span({clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, "")) : ""),
+        (md.get("title") ? newT.a({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, "")) : ""),
         newT.a({href:"#", clss:"edit"}, "Edit"),
         newT.a({href:"#", clss:"delete"}, "X")
       )
