@@ -26,6 +26,7 @@
   });
   
   
+  
   /*
   chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
@@ -193,7 +194,9 @@
       });
       chrome.windows.update(extension_window.id, {focused:true}, function () {})
       if(saved_image) {
-        openSaveForm(extension_tab, saved_image);
+        setTimeout(function() {
+          openSaveForm(extension_tab, saved_image);
+        }, 100);
       }
     } else {
       var window_params = getWindowDimensions();
@@ -274,5 +277,13 @@
     return settings.window_dims || {};
 
   }
+  
+  function checkDataIntegrity() {
+    BUCKET.FileDataIntegrity.checkAll();
+  }
+  
+  
+  checkDataIntegrity();
+
 
 })();

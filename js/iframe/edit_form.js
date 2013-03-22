@@ -62,6 +62,8 @@
           newT.label("Original Url: ", newT.a({href:metadata.get("original_url"), title:metadata.get("original_url")}, metadata.get("original_url"))),
           newT.label("Saved From: ", newT.a({href: metadata.get("page_url"), title: metadata.get("page_url")}, metadata.get("page_url"))),
           newT.label("Saved On: ", newT.strong(new Date(metadata.get("ts")))),
+          newT.label("Type: ", newT.strong(metadata.get("mime_type"))),
+          newT.label("Size: ", newT.strong(metadata.get("size"))),
           newT.input({type:"submit", value:"Save"})
         )
       )

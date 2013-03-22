@@ -553,6 +553,19 @@
       
     },
     updateFileMetadata: function(key, metadata) {
+      if(!this.metadata_update_queue) { this.metadata_update_queue = []; }
+      var dfr = new RSVP.Promise();
+      var args = Array.prototype.slice.call(arguments);
+      this.metadata_update_queue.push({
+        args:args,
+        dfr: dfr
+      });
+      if (!this.saving_metadata) {
+        this._processMetadataQueue();
+      }
+      return dfr;     
+    },
+    _doUpdateFileMetadata: function(key, metadata) {
       var dfr = new RSVP.Promise();
 
       if(!this.support) { 
@@ -574,6 +587,29 @@
       });
       
       return dfr;
+    },
+    _processMetadataQueue: function() {
+      console.log("PROCESSING.....")
+      if(!this.metadata_update_queue) { return; }
+      var _this = this,
+          metadata_item = this.metadata_update_queue.shift();
+      
+      console.log("metadata_item...", metadata_item);
+         
+      if(metadata_item) {
+        this.saving_metadata = true;
+        this._doUpdateFileMetadata.apply(this, metadata_item.args).then(function(saved_data) {
+          console.log(saved_data);
+          metadata_item.dfr.resolve(saved_data);
+          _this._processMetadataQueue();
+        }, function() {
+          delete _this.saving_metadata;
+          metadata_item.dfr.reject();
+        })
+      } else {
+        delete this.saving_metadata;
+      }
+      
     },
     removeFileMetadata: function(key) {
       var dfr = new RSVP.Promise();
@@ -607,10 +643,11 @@
       }
       
       var _this = this;
+      
       var md_promise = this.getFullMetadata().then(function(data) {
           var stringified_data = JSON.stringify(data);
           return _this.store(stringified_data, "application/json", METADATA_FILE);
-        }, function() { 
+        }, function() {
           dfr.reject(); 
       }).then(function(data) {
           dfr.resolve(data)
