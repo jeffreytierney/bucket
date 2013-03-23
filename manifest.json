@@ -12,6 +12,8 @@
       "js/lib/File.js",
       "js/lib/FileMetadata.js",
       "js/lib/FileDataIntegrity.js",
+      "js/lib/FileGroup.js",
+      "js/lib/Search.js",
       "js/background/background.js"
     ],
     "persistent": false

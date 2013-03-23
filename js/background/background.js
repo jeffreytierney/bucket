@@ -194,9 +194,7 @@
       });
       chrome.windows.update(extension_window.id, {focused:true}, function () {})
       if(saved_image) {
-        setTimeout(function() {
-          openSaveForm(extension_tab, saved_image);
-        }, 100);
+        openSaveForm(extension_tab, saved_image);
       }
     } else {
       var window_params = getWindowDimensions();
@@ -206,7 +204,9 @@
         extension_window = window;
         extension_tab = window.tabs[0];
         if(saved_image) {
-        openSaveForm(extension_tab, saved_image);
+        setTimeout(function() {
+          openSaveForm(extension_tab, saved_image);
+        }, 250);
       }
       });
     }

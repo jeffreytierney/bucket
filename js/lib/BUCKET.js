@@ -1,5 +1,7 @@
 (function() {
+
   window.BUCKET = {
-    util: {}
+    util: {},
   };
+
 })();

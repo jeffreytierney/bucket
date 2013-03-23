@@ -482,6 +482,25 @@
       return sorted_files_promise;
     },
     
+    getFilesForKeys: function(keys) {
+      
+      var get_files_promise = new RSVP.Promise(),
+        files = [];
+
+      for (var i=0; len=keys.length, i<len; i++) { 
+        BUCKET.File.load(keys[i]).loaded.then(function(bFile) {
+          files.push(bFile);
+          if(files.length === keys.length) {
+            get_files_promise.resolve(files);
+          }
+        }, function(e) { 
+          //console.log("error", e)
+        })
+    
+      }
+
+    },
+    
     clear: function() {
       var dfr = new RSVP.Promise();
       
