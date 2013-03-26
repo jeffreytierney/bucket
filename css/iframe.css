@@ -91,9 +91,35 @@ body.iframe #links {
   overflow: auto;
 }
 */
+
+#header {
+  height: 72px;
+  line-height: 72px;
+  vertical-align: middle;
+}
+
+#search_form,
+#logo {
+  display: inline-block;
+}
+
+#logo {
+  font-size: 48px;
+  line-height: 72px;
+  padding-left: 72px;
+  background-image: url(/images/gifhorse_72.png);
+  background-position: left center;
+  background-repeat: no-repeat;
+  margin-right: 20px;
+  color: rgba(220,220,220, 0.7);
+  text-shadow: 3px 3px 3px rgba(255,255,255, 0.5);
+}
+
 #search_form {
   position: relative;
   vertical-align: middle;
+  height: 72px;
+  float: right;
 }
 #search_form label,
 #q {

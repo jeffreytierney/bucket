@@ -5,8 +5,8 @@
 
   chrome.contextMenus.removeAll();
   var menu_item = chrome.contextMenus.create({
-    "title": "Save image to bucket",
-    "id": "save_to_bucket",
+    "title": "Save image to GifHorse",
+    "id": "save_to_gifhorse",
     "contexts": ["image"]
   });
   

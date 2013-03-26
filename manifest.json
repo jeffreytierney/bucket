@@ -1,8 +1,8 @@
 {
-  "name": "Bucket",
+  "name": "GifHorse",
   "version": "1.0",
   "manifest_version": 2,
-  "description": "Your own bucket of images",
+  "description": "Don't look a gifhorse in the mouth",
   "background": {
     "scripts": [
       "js/vendor/rsvp.min.js",
@@ -19,7 +19,7 @@
     "persistent": false
   },
   "browser_action": {
-    "default_icon": "icon.png"
+    "default_icon": "images/gifhorse_16.png"
   },
   "content_scripts": [
     {
@@ -39,7 +39,9 @@
     "html/images.html"
   ],
   "icons": {
-    "16": "icon.png"
+    "16": "images/gifhorse_16.png",
+    "48": "images/gifhorse_48.png",
+    "128": "images/gifhorse_128.png"
   },
   "permissions": [
     "http://*/*", 
