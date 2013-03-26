@@ -48,10 +48,9 @@
   
   newT.save("edit_form.bucket", function(file) {
     var metadata = file.data.metadata;
-    console.log(metadata.get("title"), metadata.get("notes"))
     return (
       newT.form({id:"file_save_form", clss:"clearfix"},
-        newT.a({href:"#", id:"file_save_form_close"}, "x"),
+        newT.a({href:"#", id:"file_save_form_close", clss:"overlay-close"}, "x"),
         newT.div({id:"file_form_image_container"}, 
           newT.img({src:file.data.file_entry.toURL()})
         ),

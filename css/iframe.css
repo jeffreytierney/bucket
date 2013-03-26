@@ -104,6 +104,7 @@ body.iframe #links {
 }
 
 #logo {
+  float: left;
   font-size: 48px;
   line-height: 72px;
   padding-left: 72px;
@@ -111,8 +112,8 @@ body.iframe #links {
   background-position: left center;
   background-repeat: no-repeat;
   margin-right: 20px;
-  color: rgba(220,220,220, 0.7);
-  text-shadow: 3px 3px 3px rgba(255,255,255, 0.5);
+  color: rgba(240,240,240, 1);
+  text-shadow: 2px 2px 4px rgba(255,255,255, 0.6);
 }
 
 #search_form {
@@ -229,7 +230,8 @@ body.iframe #links {
   z-index:1;
 }
 
-#file_save_form {
+#file_save_form,
+#full_size_view {
   position: fixed;
   top: 0;
   left: 0;
@@ -240,6 +242,12 @@ body.iframe #links {
   background-color: rgba(0,0,0,0.8);
 }
 
+#full_size_view img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
 #file_save_form .text,
 #file_save_form textarea {
   font-size: 14px;
@@ -247,7 +255,7 @@ body.iframe #links {
   width: 250px;
 }
 
-#file_save_form_close {
+.overlay-close {
   display: inline-block;
   height: 30px;
   line-height: 30px;  

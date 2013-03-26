@@ -138,6 +138,7 @@
     var $tgt = $(e.target);
     if($tgt.is("a.delete")) {
       e.preventDefault();
+      e.stopPropagation();
       var $parent = $tgt.closest("div"),
           key = $parent.data("file_name");
           
@@ -146,10 +147,18 @@
       });
     } else if ($tgt.is("a.edit")) {
       e.preventDefault();
+      e.stopPropagation();
       var $parent = $tgt.closest("div"),
           key = $parent.data("file_name");
 
       BUCKET.util.showEditForm(key);    
+    } else if ($tgt.is("img")) {
+      e.preventDefault();
+      e.stopPropagation();
+      var $parent = $tgt.closest("div"),
+          key = $parent.data("file_name");
+
+      BUCKET.util.showFullSize(key);    
     }
   });
   
