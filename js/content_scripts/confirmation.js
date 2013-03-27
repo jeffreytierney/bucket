@@ -27,7 +27,7 @@
           };
 
           chrome.extension.sendMessage(image_size_params, function(response) {
-            console.log(response);
+            //console.log(response);
           });
           
         }, 50)

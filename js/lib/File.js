@@ -34,14 +34,14 @@
   function loadFile(file_name) {
     var _this = this;
     BUCKET.fileStore.getFile(file_name, true).then(function(file_obj) {
-      console.log(file_obj);
+      //console.log(file_obj);
       _this.data.file_name = file_obj.file.name;
       _this.data.file = file_obj.file;
       _this.data.file_entry = file_obj.file_entry;
       if (!_this.data.metadata) {
         //console.log(_this.data.file_name);
         BUCKET.fileStore.getFileMetadata(_this.data.file_name).then(function(metadata) {
-          console.log(metadata);
+          //console.log(metadata);
           _this.data.metadata = new BUCKET.FileMetadata(metadata);
           //console.log(_this);
           _this.loaded.resolve(_this);

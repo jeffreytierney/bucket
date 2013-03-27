@@ -467,7 +467,7 @@
           BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
             files.push(bFile);
             if(files.length === keys.length) {
-              console.log(files)
+              //console.log(files)
               files.sort(function(a,b) {
                 return a.data.metadata.get(sort_key) < b.data.metadata.get(sort_key) ? ret_a : ret_b;  
               })
@@ -608,17 +608,17 @@
       return dfr;
     },
     _processMetadataQueue: function() {
-      console.log("PROCESSING.....")
+      //console.log("PROCESSING.....")
       if(!this.metadata_update_queue) { return; }
       var _this = this,
           metadata_item = this.metadata_update_queue.shift();
       
-      console.log("metadata_item...", metadata_item);
+      //console.log("metadata_item...", metadata_item);
          
       if(metadata_item) {
         this.saving_metadata = true;
         this._doUpdateFileMetadata.apply(this, metadata_item.args).then(function(saved_data) {
-          console.log(saved_data);
+          //console.log(saved_data);
           metadata_item.dfr.resolve(saved_data);
           _this._processMetadataQueue();
         }, function() {

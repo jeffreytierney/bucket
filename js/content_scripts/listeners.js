@@ -23,7 +23,6 @@
     });
     
     var reportParams = function() {
-      console.log("reporting", img.height, img.width);
       if(!img.height && !img.width) {
         setTimeout(function() {
           reportParams();
@@ -42,7 +41,7 @@
       
       chrome.extension.sendMessage(image_size_params, function(response) {
         chrome.extension.sendMessage({type:"image_save_complete", file_name:file_obj.image_file_name}, function(response) {
-          console.log(response);
+          //console.log(response);
         });
       });
     }

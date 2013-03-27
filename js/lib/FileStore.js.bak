@@ -170,7 +170,7 @@
           // Get a File object representing the file,
           // then use FileReader to read its contents.
           fileEntry.file(function(file) {
-            console.log(file.type);
+            //console.log(file.type);
              var reader = new FileReader();
 
              reader.onloadend = function(e) {
@@ -182,11 +182,11 @@
                }
                catch(e) {
                  console.log(e.message)
-                 console.log(this.result);
+                 //console.log(this.result);
                }
                cb.success && cb.success.call(window, val, file);
              };
-             console.log(reader)
+             //console.log(reader)
              reader.readAsText(file);
           }, cb.error);
         }, cb.error);
@@ -204,7 +204,7 @@
           // Get a File object representing the file,
           // then use FileReader to read its contents.
           fileEntry.file(function(file) {
-            console.log(file.type);
+            //console.log(file.type);
              var reader = new FileReader();
 
              reader.onloadend = function(e) {
@@ -215,11 +215,11 @@
                }
                catch(e) {
                  console.log(e.message)
-                 console.log(this.result);
+                 //console.log(this.result);
                }
                cb.success && cb.success.call(window, val, file);
              };
-             console.log(reader)
+             //console.log(reader)
              reader.readAsDataURL(file);
           }, cb.error);
         }, cb.error);
@@ -265,7 +265,7 @@
                   else {
                     // then only call the success handler on the real write.
                     // fun, right?
-                    console.log('Write completed.');
+                    //console.log('Write completed.');
                     cb.success && cb.success.call(window);
                   }
                 };
@@ -276,8 +276,8 @@
 
                 function doWrite(val, fileWriter) {
                   var blob = bb.getBlob(type || "image/jpeg")
-                  console.log(blob);
-                  console.log(fileWriter);
+                  //console.log(blob);
+                  //console.log(fileWriter);
                   fileWriter.write(blob);
                 }
               }, cb.error);
@@ -302,7 +302,7 @@
 
           fileEntry.remove(function() {
             cb.success && cb.success.call(window);
-            console.log('File removed.');
+            //console.log('File removed.');
           }, cb.error);
 
         }, cb.error);

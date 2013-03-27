@@ -28,7 +28,7 @@
       }
       if(needs_update) {
         this.data.metadata.setVals(metadata_update);
-        console.log(this.data.file_name, this.data.metadata.toJSON());
+        //console.log(this.data.file_name, this.data.metadata.toJSON());
         BUCKET.fileStore.updateFileMetadata(this.data.file_name, this.data.metadata.toJSON());
       }
     }

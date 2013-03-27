@@ -11,16 +11,7 @@
         images.appendChild(newT.div(
           newT.img({src:bFile.data.file_entry.toURL()})
         ));
-        
-        /*
-        return bFile.readAsDataUrl().then(function(data_url) {
-          console.log("hi");
-            images.appendChild(newT.div(
-              newT.img({src:data_url})
-              //newT.p(JSON.stringify(bFile.data.metadata.toJSON()))
-            ));
-          }, function(e) { console.log("error", e) }
-        );*/
+
       }, function(e) { console.log("error", e)})
       
     }

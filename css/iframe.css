@@ -96,6 +96,7 @@ body.iframe #links {
   height: 72px;
   line-height: 72px;
   vertical-align: middle;
+  margin-bottom: 20px;
 }
 
 #search_form,

@@ -2,7 +2,7 @@
   BUCKET.util.showEditForm = function(key) {
     var file = BUCKET.bg_page.BUCKET.File.load(key);
     file.loaded.then(function() { // success
-      console.log(file);
+      //console.log(file);
       $(document.body).append(newT.render("edit_form.bucket", file));
       
       $("#file_title").focus();

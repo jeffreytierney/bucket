@@ -46,7 +46,7 @@
           width: $(this).width()
         }
       }, function(response) {
-        console.log(response);
+        //console.log(response);
       });
 
       }, 500)  
@@ -82,21 +82,21 @@
   $("#close_iframe").on("click", function(e) {
     e.preventDefault();
     chrome.extension.sendMessage({type:"remove_iframe"}, function(response) {
-      console.log(response);
+      //console.log(response);
     });
   }, false);
   
   $("#swap_position").on("click", function(e) {
     e.preventDefault();
     chrome.extension.sendMessage({type:"swap_iframe_position"}, function(response) {
-      console.log(response);
+      //console.log(response);
     });
   }, false);
   
   $("#pop_out").on("click", function(e) {
     e.preventDefault();
     chrome.extension.sendMessage({type:"open_in_new_window"}, function(response) {
-      console.log(response);
+      //console.log(response);
     });
   });
   
@@ -178,21 +178,6 @@
     
     return dfr;
   }
-
-/*
-  function loadImages() {
-    var images = document.getElementById("images"),
-        sf_promise = BUCKET.files.loadAll(),
-        get_url_promise;
-        
-    $(images).empty();
-    sf_promise.then(function(files) {
-      for (var i=0; len=files.length, i<len; i++) {
-        images.appendChild(newT.render("image_item.bucket", files[i]));
-      }
-    }, function(e) { console.log("error", e)});
-  }
-*/
   
   newT.save("image_item.bucket", function(file) {
     var md = file.data.metadata;
