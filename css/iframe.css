@@ -133,10 +133,14 @@ body.iframe #links {
 #q {
   padding: 5px 45px 5px 5px;
   width: 300px;
+  position: relative;
+  top: -2px;
 }
 #q_clear {
-  position: relative;
-  left: -40px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -12px;
   height: 24px;
   width: 24px;
   line-height: 24px;

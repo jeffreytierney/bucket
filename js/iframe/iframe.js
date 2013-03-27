@@ -4,22 +4,61 @@
     BUCKET.bg_page = bg;
     BUCKET.files = new BUCKET.bg_page.BUCKET.FileGroup();
     BUCKET.files.setOnFilter(function(bf) {
-      if(bf.hidden_files.length === 0) {
-        $("#images .is-hidden").removeClass("is-hidden")
-      } else {
-        var file;
-        for (var i=0; len=bf.hidden_files.length, i<len; i++) {
-          file = bf.hidden_files[i];
-          $(document.getElementById(file.data.file_name.split(".")[0])).addClass("is-hidden");
-        }
-        for (var i=0; len=bf.display_files.length, i<len; i++) {
-          file = bf.display_files[i];
-          $(document.getElementById(file.data.file_name.split(".")[0])).removeClass("is-hidden");
-        }
+      showAndHide(bf);
+      /*
+      var file;
+      for (var i=0; len=bf.hidden_files.length, i<len; i++) {
+        file = bf.hidden_files[i];
+        $(document.getElementById(file.data.file_name.split(".")[0])).addClass("is-hidden");
       }
+      for (var i=0; len=bf.display_files.length, i<len; i++) {
+        file = bf.display_files[i];
+        $(document.getElementById(file.data.file_name.split(".")[0])).removeClass("is-hidden");
+      }
+      */
     });
     loadImages();
+    $("#q").focus();
   });
+  
+  var timers = {
+        show: null,
+        hide: null,
+        show_hide: null
+      }, 
+      file_visibility = {};
+  
+  function showAndHide(bf) {
+    clearTimeout(timers.show_hide);
+    clearTimeout(timers.show);
+    clearTimeout(timers.hide);
+    
+    timers.show_hide = setTimeout(function() {
+      toggle("show", bf.display_files);
+      toggle("hide", bf.hidden_files);
+    });
+    
+    var chunk_size = 20;
+    
+    function toggle(type, files, i) {
+      i = i || 0;
+      var end = Math.min(i+chunk_size, files.length),
+          class_method = (type==="show" ? "removeClass" : "addClass");
+      while(i<end) {
+        var file = files[i],
+          key = file.data.file_name.split(".")[0];
+        if(file_visibility[key] != type) {        
+          $(document.getElementById(key))[class_method]("is-hidden");
+        }
+        file_visibility[key] = type;
+        i++;
+      }
+      if (i < files.length-1) { 
+        timers[type] = setTimeout(function() { toggle(type, files, i); });
+      }
+    }
+
+  }
   
   
   chrome.extension.onMessage.addListener(
