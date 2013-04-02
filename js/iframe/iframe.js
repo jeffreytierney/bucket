@@ -270,7 +270,7 @@
           newT[orig_url_type]({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, ""))
         ),
         (md.get("notes") ? newT.p(md.get("notes")) : ""),
-        (md.get("title") ? newT.a({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, "")) : ""),
+        (md.get("title") ? newT[orig_url_type]({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, "")) : ""),
         newT.a({href:"#", clss:"edit"}, "Edit"),
         newT.a({href:"#", clss:"delete"}, "X")
       )
