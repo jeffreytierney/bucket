@@ -191,6 +191,8 @@ body.iframe #links {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #FFF;
+  font-size: 12px;
+  line-height: 16px;
 }
 
 #images div strong, 
@@ -310,4 +312,33 @@ body.iframe #links {
 #file_save_form label a {
   color: #FFF;
   font-weight: bold;
+}
+
+#drop_zone {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: none;
+  background-color: #000;
+  z-index: 1;
+}
+
+#drop_zone.is-dragging {
+  display: block;
+}
+
+#drop_zone:after {
+  content: "DROP FILES HERE";
+  display: block;
+  height: 100px;
+  line-height: 100px;
+  font-size: 75px;
+  color: #FFF;
+  position: absolute;
+  top: 50%;
+  margin-top: -50px;
+  width: 100%;
+  text-align: center;
 }

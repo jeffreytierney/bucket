@@ -1,5 +1,6 @@
 (function() {
   BUCKET.util.showEditForm = function(key) {
+    closeForm();
     var file = BUCKET.bg_page.BUCKET.File.load(key);
     file.loaded.then(function() { // success
       //console.log(file);
@@ -47,7 +48,10 @@
   }
   
   newT.save("edit_form.bucket", function(file) {
-    var metadata = file.data.metadata;
+    var metadata = file.data.metadata,
+        orig_url_type = metadata.get("original_url").match(/^https?\:\/\//) ? "a" : "span",
+        page_url_type = metadata.get("page_url").match(/^https?\:\/\//) ? "a" : "span";
+    
     return (
       newT.form({id:"file_save_form", clss:"clearfix"},
         newT.a({href:"#", id:"file_save_form_close", clss:"overlay-close"}, "x"),
@@ -58,8 +62,8 @@
           newT.label("Title:", newT.input({id:"file_title", clss:"text", value:metadata.get("title")})),
           newT.label("Notes:", newT.textarea({id:"file_notes"}, metadata.get("notes"))),
           newT.label("Height: ", newT.strong(metadata.get("height")), " Width: ", newT.strong(metadata.get("width"))),
-          newT.label("Original Url: ", newT.a({href:metadata.get("original_url"), title:metadata.get("original_url")}, metadata.get("original_url"))),
-          newT.label("Saved From: ", newT.a({href: metadata.get("page_url"), title: metadata.get("page_url")}, metadata.get("page_url"))),
+          newT.label("Original Url: ", newT[orig_url_type]({href:metadata.get("original_url"), title:metadata.get("original_url")}, metadata.get("original_url"))),
+          newT.label("Saved From: ", newT[page_url_type]({href: metadata.get("page_url"), title: metadata.get("page_url")}, metadata.get("page_url"))),
           newT.label("Saved On: ", newT.strong(new Date(metadata.get("ts")))),
           newT.label("Type: ", newT.strong(metadata.get("mime_type"))),
           newT.label("Size: ", newT.strong(metadata.get("size"))),

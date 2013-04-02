@@ -5,17 +5,6 @@
     BUCKET.files = new BUCKET.bg_page.BUCKET.FileGroup();
     BUCKET.files.setOnFilter(function(bf) {
       showAndHide(bf);
-      /*
-      var file;
-      for (var i=0; len=bf.hidden_files.length, i<len; i++) {
-        file = bf.hidden_files[i];
-        $(document.getElementById(file.data.file_name.split(".")[0])).addClass("is-hidden");
-      }
-      for (var i=0; len=bf.display_files.length, i<len; i++) {
-        file = bf.display_files[i];
-        $(document.getElementById(file.data.file_name.split(".")[0])).removeClass("is-hidden");
-      }
-      */
     });
     loadImages();
     $("#q").focus();
@@ -46,7 +35,7 @@
           class_method = (type==="show" ? "removeClass" : "addClass");
       while(i<end) {
         var file = files[i],
-          key = file.data.file_name.split(".")[0];
+          key = file.getKey();
         if(file_visibility[key] != type) {        
           $(document.getElementById(key))[class_method]("is-hidden");
         }
@@ -92,31 +81,51 @@
     }) 
   })();
   
-/*
-  var queryStringToHash = function(str) {
-      str = str || location.href;
-      if (str.indexOf("?") > -1) {
-          str = str.substring(str.indexOf("?") + 1);
-      } else {
-          return {};
-      }
-
-      var pairs = str.split("&");
-      var params = {};
-
-      var i = pairs.length;
-      while (i) {
-          var pair = pairs[--i].split("=");
-          params[decodeURIComponent(pair[0].replace(/\+/g, " "))] = decodeURIComponent(pair[1].replace(/\+/g, " "));
-      }
-
-      return params;
-  }
   
-  if(queryStringToHash()["iframe"]) {
-    document.body.className = document.body.className + " iframe";
-  }
-*/
+  var $drop_zone = $("#drop_zone");
+  
+  document.body.addEventListener("dragenter", function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy"
+    if(e.dataTransfer.types && e.dataTransfer.types.length && e.dataTransfer.types.indexOf("Files") > -1) {
+      $drop_zone.addClass("is-dragging");
+    }
+  }, false);
+  
+  document.getElementById("drop_zone").addEventListener("dragleave", function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    $drop_zone.removeClass("is-dragging");
+  }, false);
+  
+  document.getElementById("drop_zone").addEventListener("dragover", function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "copy";
+  }, false);
+
+
+  
+  document.getElementById("drop_zone").addEventListener("drop", function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    $drop_zone.removeClass("is-dragging");
+    var files = e.dataTransfer.files;
+    for(var i=0, len = files.length; i<len; i++) {
+      BUCKET.bg_page.BUCKET.File.newFromFileUpload(files[i]).loaded.then(function(bf) {
+        updateImageDimensions(bf).then(function() {
+          loadImages();
+          if(len === 1) {
+            BUCKET.util.showEditForm(bf.data.file_name);
+          }
+        });
+      }, function(e) {
+        alert(e);
+      });
+    }
+    
+  }, false);
 
   $("#close_iframe").on("click", function(e) {
     e.preventDefault();
@@ -218,14 +227,47 @@
     return dfr;
   }
   
+  function updateImageDimensions(bf) {
+    var dfr = new RSVP.Promise();
+    var img = newT.img({
+      id:"bucket_img_dim_check", 
+      src:bf.data.file_entry.toURL(), 
+      style:"position:fixed; bottom:0; right:0;"
+    });
+    
+    document.body.appendChild(img);
+  
+    setTimeout(function() {
+    
+      var image_size_params = {
+        type: "update_metadata",
+        file_name: bf.data.file_name,
+        update_params: {
+          height: img.height,
+          width: img.width
+        }
+      };
+
+      chrome.extension.sendMessage(image_size_params, function(response) {
+        img.parentNode.removeChild(img);
+        dfr.resolve();
+        //console.log(response);
+      });
+    }, 50)
+
+    return dfr;
+
+  }
+  
   newT.save("image_item.bucket", function(file) {
-    var md = file.data.metadata;
+    var md = file.data.metadata,
+        orig_url_type = md.get("original_url").match(/^https?\:\/\//) ? "a" : "span";
     return (
-      newT.div({id:file.data.file_name.split(".")[0], "data-file_name":file.data.file_name},
+      newT.div({id:file.getKey(), "data-file_name":file.data.file_name},
         newT.img({src:file.data.file_entry.toURL()}),
         (md.get("title") ? 
           newT.strong({clss:"title"}, md.get("title")) : 
-          newT.a({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, ""))
+          newT[orig_url_type]({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, ""))
         ),
         (md.get("notes") ? newT.p(md.get("notes")) : ""),
         (md.get("title") ? newT.a({href:md.get("original_url"), target:"_blank", clss:"url", title:md.get("original_url")}, md.get("original_url").replace(/https?\:\/\//, "")) : ""),

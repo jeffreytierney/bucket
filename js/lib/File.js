@@ -1,7 +1,13 @@
 (function() {
   var regex = {
-    data_uri: /data\:\s*([^;]+);\s*base64\,(.+)/i
-  };
+        data_uri: /data\:\s*([^;]+);\s*base64\,(.+)/i
+      },
+      _allowed_file_types = {
+        "image/jpg": ".jpg",
+        "image/jpeg": ".jpg",
+        "image/gif": ".gif",
+        "image/png": ".png"
+      };
   
   function checkForDataURI(url) {
     return url.match(regex.data_uri);
@@ -25,6 +31,9 @@
     },
     loadFile: function(name) {
       return loadFile.call(this, name);
+    },
+    getKey: function() {
+      return this.data.file_name.split(".")[0];
     }
   };
   
@@ -171,6 +180,43 @@
     return bf;
   }
   
+  bFile.newFromFileUpload = function(file, metadata) {
+ 
+    metadata = metadata || {};
+    metadata.original_url = file.name;
+    metadata.page_url = "Upload"
+    var bf = new bFile();
+
+    if(!file.type || !_allowed_file_types[file.type]) {
+      bf.loaded.reject(new Error("ERR_FILE_TYPE_NOT_ALLOWED"));
+    }
+    
+    var _file_details;
+    BUCKET.fileStore.store(file, file.type).then(function(file_details) {
+        _file_details = file_details;
+        return BUCKET.fileStore.getFileMetadata(_file_details.key);
+      }, function() {
+        bf.loaded.reject();
+    }).then(function(found_metadata) {
+        if(found_metadata && found_metadata.ts) {
+          metadata = found_metadata;
+        }
+        metadata["mime_type"] = _file_details.type;
+        metadata["size"] = _file_details.size;
+        bf.data.metadata = new BUCKET.FileMetadata(metadata);
+        return BUCKET.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());
+
+      }, function() {
+        bf.loaded.reject();
+    }).then(function() {
+      //alert(_file_details.key)
+        loadFile.call(bf, _file_details.key);
+      }, function() {
+        bf.loaded.reject();
+    });
+    
+    return bf;
+  }
   
   
   

@@ -318,7 +318,14 @@
         //var bb = new BlobBuilder();
         //bb.append(val);
         var f = new FileReader();
-        var blob = new Blob([val], {type: type || "image/jpeg"});
+        var blob = null;
+        if(val instanceof File) {
+          blob = val;
+          type = val.type;
+        }
+        else {
+          blob = new Blob([val], {type: type || "image/jpeg"});
+        }
         
         f.onload = function(on_e) {
           //console.log(on_e.target.result);
@@ -461,10 +468,14 @@
       var lk_promise = BUCKET.fileStore.listKeys(true),
           sorted_files_promise = new RSVP.Promise(),
           files = [];
-
+          
+      var key_hash = {}
       lk_promise.then(function(keys) { 
         for (var i=0; len=keys.length, i<len; i++) { 
+          key_hash[keys[i].name] = "";
           BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
+            delete key_hash[bFile.data.file_name];
+            //console.log(key_hash)
             files.push(bFile);
             if(files.length === keys.length) {
               //console.log(files)
