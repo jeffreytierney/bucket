@@ -232,7 +232,7 @@
     var img = newT.img({
       id:"bucket_img_dim_check", 
       src:bf.data.file_entry.toURL(), 
-      style:"position:fixed; bottom:0; right:0;"
+      style:"position:fixed; top:100%; left:100%;"
     });
     
     document.body.appendChild(img);
