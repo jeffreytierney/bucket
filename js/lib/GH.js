@@ -1,10 +1,10 @@
 (function() {
 
-  window.BUCKET = {
+  window.GH = {
     util: {}
   };
   
-  BUCKET.util.commify = function(num) {
+  GH.util.commify = function(num) {
     if (num === null) {return ''};
     var i, num_string_array = (num+"").split("").reverse();
     for( i=3; i<num_string_array.length; i+=4) {

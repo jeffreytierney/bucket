@@ -35,7 +35,7 @@
           page_title: tab.title
         }
         showLoader();
-        var file = BUCKET.File.newFromURI(info.srcUrl, metadata);
+        var file = GH.File.newFromURI(info.srcUrl, metadata);
         file.loaded.then(function() { // success
           file.readAsDataUrl().then(function(data_uri) {       
             getFileDimensions({
@@ -91,13 +91,13 @@
   // actions
     
   function updateMetaData(file_name, update_params, sendResponse) {
-    BUCKET.fileStore.getFileMetadata(file_name).then(function(metadata) {
+    GH.fileStore.getFileMetadata(file_name).then(function(metadata) {
       //console.log(update_params, metadata);
-      var file_metadata = new BUCKET.FileMetadata(metadata);
+      var file_metadata = new GH.FileMetadata(metadata);
       for(var param in update_params) {
         file_metadata.set(param, update_params[param]);
       }
-      BUCKET.fileStore.updateFileMetadata(file_name, file_metadata.toJSON()).then(function() {
+      GH.fileStore.updateFileMetadata(file_name, file_metadata.toJSON()).then(function() {
         sendResponse({ok:true});
       });
     }, function(e) {
@@ -196,7 +196,7 @@
   }
   
   function deleteImage(key, sendResponse) {
-    BUCKET.fileStore.remove(key).then(function() {
+    GH.fileStore.remove(key).then(function() {
       sendResponse({removed: key});
     })
   }
@@ -214,7 +214,7 @@
   }
   
   function checkDataIntegrity() {
-    BUCKET.FileDataIntegrity.checkAll();
+    GH.FileDataIntegrity.checkAll();
   }
   
   

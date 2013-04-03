@@ -69,5 +69,5 @@
     }
   }
   
-  window.BUCKET.FileMetadata = bFileMetadata;
+  window.GH.FileMetadata = bFileMetadata;
 })();

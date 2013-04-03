@@ -1,10 +1,10 @@
 (function() {
-  BUCKET.FileGroup = function() {
+  GH.FileGroup = function() {
     this.init();
   }
   
-  BUCKET.FileGroup.prototype = {
-    constructor: BUCKET.FileGroup.prototype.constructor,
+  GH.FileGroup.prototype = {
+    constructor: GH.FileGroup.prototype.constructor,
     init: function() {
       this.files = [];
       this.display_files = [];
@@ -14,7 +14,7 @@
     loadAll: function() {
       var dfr = new RSVP.Promise(),
           _this = this;
-      BUCKET.fileStore.getSortedFiles().then(function(files) {
+      GH.fileStore.getSortedFiles().then(function(files) {
         _this.files = files;
         dfr.resolve(_this);
       });
@@ -35,7 +35,7 @@
           _this = this;
 
 
-      BUCKET.search(q_obj).then(function(keys) {
+      GH.search(q_obj).then(function(keys) {
         if(keys === -1) {
           _this.display_files = _this.files;
           _this.hidden_files = [];

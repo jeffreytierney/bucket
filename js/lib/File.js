@@ -21,10 +21,10 @@
   bFile.prototype = {
     constructor: bFile.prototype.constructor,
     readAsDataUrl: function() {
-      return BUCKET.fileStore.readFileAs(this.data.file, "DATA_URL");
+      return GH.fileStore.readFileAs(this.data.file, "DATA_URL");
     },
     readAsBinary: function() {
-      return BUCKET.fileStore.readFileAs(this.data.file, "BINARY");
+      return GH.fileStore.readFileAs(this.data.file, "BINARY");
     },
     getFileEntryUrl: function() {
       
@@ -42,16 +42,16 @@
   /* FUNCTION TO ACTUALLY DO HEAVY LIFTING OF LOADING A FILE */
   function loadFile(file_name) {
     var _this = this;
-    BUCKET.fileStore.getFile(file_name, true).then(function(file_obj) {
+    GH.fileStore.getFile(file_name, true).then(function(file_obj) {
       //console.log(file_obj);
       _this.data.file_name = file_obj.file.name;
       _this.data.file = file_obj.file;
       _this.data.file_entry = file_obj.file_entry;
       if (!_this.data.metadata) {
         //console.log(_this.data.file_name);
-        BUCKET.fileStore.getFileMetadata(_this.data.file_name).then(function(metadata) {
+        GH.fileStore.getFileMetadata(_this.data.file_name).then(function(metadata) {
           //console.log(metadata);
-          _this.data.metadata = new BUCKET.FileMetadata(metadata);
+          _this.data.metadata = new GH.FileMetadata(metadata);
           //console.log(_this);
           _this.loaded.resolve(_this);
         }, function(e) {
@@ -109,9 +109,9 @@
     var bf = new bFile();
     
     var _file_details;
-    BUCKET.fileStore.fetchAndStore(url).then(function(file_details) {
+    GH.fileStore.fetchAndStore(url).then(function(file_details) {
         _file_details = file_details;
-        return BUCKET.fileStore.getFileMetadata(_file_details.key);
+        return GH.fileStore.getFileMetadata(_file_details.key);
       }, function() {
         bf.loaded.reject();
     }).then(function(found_metadata) {
@@ -120,8 +120,8 @@
         }
         metadata["mime_type"] = _file_details.type;
         metadata["size"] = _file_details.size;
-        bf.data.metadata = new BUCKET.FileMetadata(metadata);
-        return BUCKET.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());
+        bf.data.metadata = new GH.FileMetadata(metadata);
+        return GH.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());
 
       }, function() {
         bf.loaded.reject();
@@ -151,9 +151,9 @@
           data = convertToArrayBuffer(matches[2]);
       
       var _file_details;
-      BUCKET.fileStore.store(data, mime_type).then(function(file_details) {
+      GH.fileStore.store(data, mime_type).then(function(file_details) {
           _file_details = file_details
-          return BUCKET.fileStore.getFileMetadata(_file_details.key);
+          return GH.fileStore.getFileMetadata(_file_details.key);
         }, function() {
           bf.loaded.reject();
       }).then(function(found_metadata) {
@@ -162,8 +162,8 @@
           }
           metadata["mime_type"] = _file_details.type;
           metadata["size"] = _file_details.size;
-          bf.data.metadata = new BUCKET.FileMetadata(metadata);
-          return BUCKET.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());   
+          bf.data.metadata = new GH.FileMetadata(metadata);
+          return GH.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());   
           
         }, function() {
           bf.loaded.reject();
@@ -192,9 +192,9 @@
     }
     
     var _file_details;
-    BUCKET.fileStore.store(file, file.type).then(function(file_details) {
+    GH.fileStore.store(file, file.type).then(function(file_details) {
         _file_details = file_details;
-        return BUCKET.fileStore.getFileMetadata(_file_details.key);
+        return GH.fileStore.getFileMetadata(_file_details.key);
       }, function() {
         bf.loaded.reject();
     }).then(function(found_metadata) {
@@ -203,8 +203,8 @@
         }
         metadata["mime_type"] = _file_details.type;
         metadata["size"] = _file_details.size;
-        bf.data.metadata = new BUCKET.FileMetadata(metadata);
-        return BUCKET.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());
+        bf.data.metadata = new GH.FileMetadata(metadata);
+        return GH.fileStore.updateFileMetadata(_file_details.key, bf.data.metadata.toJSON());
 
       }, function() {
         bf.loaded.reject();
@@ -220,5 +220,5 @@
   
   
   
-  window.BUCKET.File = bFile;
+  window.GH.File = bFile;
 })();

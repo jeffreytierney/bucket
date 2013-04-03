@@ -1,13 +1,13 @@
 (function() {
   var images = document.getElementById("images"),
-      lk_promise = BUCKET.fileStore.listKeys(true),
+      lk_promise = GH.fileStore.listKeys(true),
       get_url_promise;
       
       
   lk_promise.then(function(keys) { 
     for (var i=0; len=keys.length, i<len; i++) { 
 
-      BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
+      GH.File.load(keys[i].name).loaded.then(function(bFile) {
         images.appendChild(newT.div(
           newT.img({src:bFile.data.file_entry.toURL()})
         ));

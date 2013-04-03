@@ -465,7 +465,7 @@
         ret_a = -1;
         ret_b = 1;
       }
-      var lk_promise = BUCKET.fileStore.listKeys(true),
+      var lk_promise = GH.fileStore.listKeys(true),
           sorted_files_promise = new RSVP.Promise(),
           files = [];
           
@@ -473,7 +473,7 @@
       lk_promise.then(function(keys) { 
         for (var i=0; len=keys.length, i<len; i++) { 
           key_hash[keys[i].name] = "";
-          BUCKET.File.load(keys[i].name).loaded.then(function(bFile) {
+          GH.File.load(keys[i].name).loaded.then(function(bFile) {
             delete key_hash[bFile.data.file_name];
             //console.log(key_hash)
             files.push(bFile);
@@ -499,7 +499,7 @@
         files = [];
 
       for (var i=0; len=keys.length, i<len; i++) { 
-        BUCKET.File.load(keys[i]).loaded.then(function(bFile) {
+        GH.File.load(keys[i]).loaded.then(function(bFile) {
           files.push(bFile);
           if(files.length === keys.length) {
             get_files_promise.resolve(files);
@@ -697,6 +697,6 @@
   }
   
 
-  window.BUCKET.fileStore = new Store();
+  window.GH.fileStore = new Store();
 
 })();

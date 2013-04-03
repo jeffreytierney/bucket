@@ -4,8 +4,8 @@
   });
   
   function init(bg) {
-    BUCKET.bg_page = bg;
-    BUCKET.files = new BUCKET.bg_page.BUCKET.FileGroup();
+    GH.bg_page = bg;
+    GH.files = new GH.bg_page.GH.FileGroup();
     runChecks();
   }
   
@@ -25,7 +25,7 @@
   
   function loadFiles() {
     var dfr = new RSVP.Promise();
-    BUCKET.files.loadAll().then(function(bf) {
+    GH.files.loadAll().then(function(bf) {
       document.getElementById("num_images").appendChild(document.createTextNode(bf.files.length));
       dfr.resolve(bf);
     });
@@ -33,8 +33,8 @@
   }
   
   function checkQuota() {
-    BUCKET.bg_page.BUCKET.fileStore.checkQuota(function(used, q) { 
-      document.getElementById("disk_space_used").appendChild(document.createTextNode(BUCKET.util.commify(used)+" KB"));
+    GH.bg_page.GH.fileStore.checkQuota(function(used, q) { 
+      document.getElementById("disk_space_used").appendChild(document.createTextNode(GH.util.commify(used)+" KB"));
     });
   }
 
@@ -45,7 +45,7 @@
     checkGifs();
     
     function checkGifs() {
-      BUCKET.files.filter({mime_type:"image/gif"}).then(function(bf) {
+      GH.files.filter({mime_type:"image/gif"}).then(function(bf) {
         total += bf.display_files.length;
         document.getElementById("num_gifs").appendChild(document.createTextNode(bf.display_files.length));
         checkJpgs()
@@ -53,7 +53,7 @@
     }
 
     function checkJpgs() {
-      BUCKET.files.filter({mime_type:"image/jpeg"}).then(function(bf) {
+      GH.files.filter({mime_type:"image/jpeg"}).then(function(bf) {
         total += bf.display_files.length;
         document.getElementById("num_jpgs").appendChild(document.createTextNode(bf.display_files.length));
         checkPngs()
@@ -61,7 +61,7 @@
     }
     
     function checkPngs() {   
-      BUCKET.files.filter({mime_type:"image/png"}).then(function(bf) {
+      GH.files.filter({mime_type:"image/png"}).then(function(bf) {
         total += bf.display_files.length;
         document.getElementById("num_pngs").appendChild(document.createTextNode(bf.display_files.length));
         calculateOther(bf);
@@ -82,7 +82,7 @@
   function checkOldestFile() {
     var dfr = new RSVP.Promise(),
         oldest_date = "None",
-        bf = BUCKET.files;
+        bf = GH.files;
     if(bf.files.length) {
       var oldest = bf.files[bf.files.length-1];
       oldest_date = moment(oldest.data.metadata.get("ts")).format('MMM DD YYYY h:mm a');
@@ -99,7 +99,7 @@
         max_size = 0,
         min_size = 0,
         average_size = 0,
-        bf = BUCKET.files;
+        bf = GH.files;
         
     var size;
     for(var i=0, len=bf.files.length; i<len; i++) {
@@ -113,9 +113,9 @@
       average_size = Math.round(total_size / bf.files.length);
     }
     
-    document.getElementById("largest_file_size").appendChild(document.createTextNode(BUCKET.util.commify(max_size)+" KB"));
-    document.getElementById("smallest_file_size").appendChild(document.createTextNode(BUCKET.util.commify(min_size)+" KB"));
-    document.getElementById("average_file_size").appendChild(document.createTextNode(BUCKET.util.commify(average_size)+" KB"));
+    document.getElementById("largest_file_size").appendChild(document.createTextNode(GH.util.commify(max_size)+" KB"));
+    document.getElementById("smallest_file_size").appendChild(document.createTextNode(GH.util.commify(min_size)+" KB"));
+    document.getElementById("average_file_size").appendChild(document.createTextNode(GH.util.commify(average_size)+" KB"));
     dfr.resolve();
     return dfr;
   }
@@ -124,7 +124,7 @@
     var dfr = new RSVP.Promise(),
         max_size = 0, max,
         min_size = 0, min,
-        bf = BUCKET.files;
+        bf = GH.files;
         
     var size;
     for(var i=0, len=bf.files.length; i<len; i++) {
@@ -134,8 +134,8 @@
       if(size > max_size) { max_size = size; max = file; }
     }
 
-              document.getElementById("largest_image_size").appendChild(document.createTextNode(BUCKET.util.commify(max.data.metadata.get("width"))+" x "+BUCKET.util.commify(max.data.metadata.get("height"))));
-    document.getElementById("smallest_image_size").appendChild(document.createTextNode(BUCKET.util.commify(min.data.metadata.get("width"))+" x "+BUCKET.util.commify(min.data.metadata.get("height"))));
+              document.getElementById("largest_image_size").appendChild(document.createTextNode(GH.util.commify(max.data.metadata.get("width"))+" x "+GH.util.commify(max.data.metadata.get("height"))));
+    document.getElementById("smallest_image_size").appendChild(document.createTextNode(GH.util.commify(min.data.metadata.get("width"))+" x "+GH.util.commify(min.data.metadata.get("height"))));
     dfr.resolve();
     return dfr;
   }

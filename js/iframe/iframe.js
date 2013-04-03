@@ -1,9 +1,9 @@
 (function() {
   
   chrome.runtime.getBackgroundPage(function(bg) { 
-    BUCKET.bg_page = bg;
-    BUCKET.files = new BUCKET.bg_page.BUCKET.FileGroup();
-    BUCKET.files.setOnFilter(function(bf) {
+    GH.bg_page = bg;
+    GH.files = new GH.bg_page.GH.FileGroup();
+    GH.files.setOnFilter(function(bf) {
       showAndHide(bf);
     });
     loadImages();
@@ -56,7 +56,7 @@
         loadImages();
       }
       if (request.type === "open_save_form") {
-        BUCKET.util.showEditForm(request.key);
+        GH.util.showEditForm(request.key);
       }
 
     }
@@ -113,11 +113,11 @@
     $drop_zone.removeClass("is-dragging");
     var files = e.dataTransfer.files;
     for(var i=0, len = files.length; i<len; i++) {
-      BUCKET.bg_page.BUCKET.File.newFromFileUpload(files[i]).loaded.then(function(bf) {
+      GH.bg_page.GH.File.newFromFileUpload(files[i]).loaded.then(function(bf) {
         updateImageDimensions(bf).then(function() {
           loadImages();
           if(len === 1) {
-            BUCKET.util.showEditForm(bf.data.file_name);
+            GH.util.showEditForm(bf.data.file_name);
           }
         });
       }, function(e) {
@@ -162,7 +162,7 @@
   });
   
   Form.els.q.on("input", function(e) {
-    BUCKET.files.filter(this.value);
+    GH.files.filter(this.value);
     if(this.value && Form.is_empty) {
       Form.is_empty = false;
       Form.els.search_form.removeClass("is-empty");
@@ -178,7 +178,7 @@
     Form.is_empty = true;
     Form.els.search_form.addClass("is-empty");
     Form.els.q.val("");
-    BUCKET.files.clearFilter();
+    GH.files.clearFilter();
   });
   
   $("#images").on("click", function(e) {
@@ -201,21 +201,21 @@
       var $parent = $tgt.closest("div"),
           key = $parent.data("file_name");
 
-      BUCKET.util.showEditForm(key);    
+      GH.util.showEditForm(key);    
     } else if ($tgt.is("img")) {
       e.preventDefault();
       e.stopPropagation();
       var $parent = $tgt.closest("div"),
           key = $parent.data("file_name");
 
-      BUCKET.util.showFullSize(key);    
+      GH.util.showFullSize(key);    
     }
   });
   
   function loadImages() {
     var dfr = new RSVP.Promise();
-    BUCKET.files.loadAll().then(function() {
-      BUCKET.files.filter().then(function(bf) {
+    GH.files.loadAll().then(function() {
+      GH.files.filter().then(function(bf) {
         var $images = $("#images").empty();
         var frag = newT.frag();
         for (var i=0; len=bf.files.length, i<len; i++) {
@@ -279,8 +279,8 @@
     );
   });
   
-  BUCKET.util.reloadImage = function(key) {
-    var file = BUCKET.bg_page.BUCKET.File.load(key);
+  GH.util.reloadImage = function(key) {
+    var file = GH.bg_page.GH.File.load(key);
     file.loaded.then(function() { // success
       $("#"+key.split(".")[0]).replaceWith(newT.render("image_item.bucket", file))
     });

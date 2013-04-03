@@ -1,7 +1,7 @@
 (function() {
-  BUCKET.FileDataIntegrity = {
+  GH.FileDataIntegrity = {
     checkAll:function() {
-      BUCKET.fileStore.getSortedFiles().then(function(files) {
+      GH.fileStore.getSortedFiles().then(function(files) {
           for (var i=0; len=files.length, i<len; i++) (function(f) {
             for (var j = 0, check_len = integrityChecks.length; j<check_len; j++) {
               integrityChecks[j].call(f);
@@ -12,7 +12,7 @@
     }
   }
   
-  // these are to be called with the BUCKET.File item as the scope
+  // these are to be called with the GH.File item as the scope
   // so this should always refer to a file object.
   var integrityChecks = [
     function mimeAndSize() {
@@ -29,7 +29,7 @@
       if(needs_update) {
         this.data.metadata.setVals(metadata_update);
         //console.log(this.data.file_name, this.data.metadata.toJSON());
-        BUCKET.fileStore.updateFileMetadata(this.data.file_name, this.data.metadata.toJSON());
+        GH.fileStore.updateFileMetadata(this.data.file_name, this.data.metadata.toJSON());
       }
     }
   ];  

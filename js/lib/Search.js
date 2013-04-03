@@ -1,7 +1,7 @@
 (function() {
 
 
-  BUCKET.search = function(q_obj) {
+  GH.search = function(q_obj) {
     var dfr = new RSVP.Promise();
     
     if(typeof q_obj === "string") {
@@ -11,7 +11,7 @@
     q_obj.results = [];
     q_obj.searched = false;
     
-    BUCKET.fileStore.getFullMetadata().then(function(metadata) {
+    GH.fileStore.getFullMetadata().then(function(metadata) {
       doSearch(q_obj, metadata, dfr);
     }, function(e) { dfr.reject(e); });
 
@@ -38,7 +38,7 @@
         
     dfr.resolve(results);
         
-    // BUCKET.fileStore.getFilesForKeys(results).then(function(files) {
+    // GH.fileStore.getFilesForKeys(results).then(function(files) {
     //   dfr.resolve(files);
     // }, function() {
     //   dfr.reject();

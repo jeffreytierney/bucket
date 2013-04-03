@@ -1,6 +1,6 @@
 (function() {
-  BUCKET.util.showFullSize = function(key) {
-    var file = BUCKET.bg_page.BUCKET.File.load(key);
+  GH.util.showFullSize = function(key) {
+    var file = GH.bg_page.GH.File.load(key);
     file.loaded.then(function() { // success
       $(document.body).append(newT.render("full_size_view.bucket", file));
       $("#full_size_view_close").on("click", function(e) {

@@ -7,7 +7,7 @@
     "scripts": [
       "js/vendor/rsvp.min.js",
       "js/vendor/md5.js",
-      "js/lib/BUCKET.js",
+      "js/lib/GH.js",
       "js/lib/FileStore.js",
       "js/lib/File.js",
       "js/lib/FileMetadata.js",

@@ -1,7 +1,7 @@
 (function() {
-  BUCKET.util.showEditForm = function(key) {
+  GH.util.showEditForm = function(key) {
     closeForm();
-    var file = BUCKET.bg_page.BUCKET.File.load(key);
+    var file = GH.bg_page.GH.File.load(key);
     file.loaded.then(function() { // success
       //console.log(file);
       $(document.body).append(newT.render("edit_form.bucket", file));
@@ -30,7 +30,7 @@
         };
         chrome.extension.sendMessage(image_metadata, function(response) {
           closeForm();
-          BUCKET.util.reloadImage(key);
+          GH.util.reloadImage(key);
         });
       })
       
@@ -75,7 +75,7 @@
           newT.label("Saved From: ", newT[page_url_type]({href: metadata.get("page_url"), title: metadata.get("page_url")}, metadata.get("page_url"))),
           newT.label("Saved On: ", newT.strong(moment(metadata.get("ts")).format('MMM DD YYYY h:mm a'))),
           newT.label("Type: ", newT.strong(metadata.get("mime_type"))),
-          newT.label("Size: ", newT.strong(BUCKET.util.commify(metadata.get("size")), " KB"))
+          newT.label("Size: ", newT.strong(GH.util.commify(metadata.get("size")), " KB"))
 
         ),
         newT.div({id:"file_form_image_container"}, 
