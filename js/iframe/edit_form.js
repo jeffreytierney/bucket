@@ -60,24 +60,26 @@
     return (
       newT.form({id:"file_save_form", clss:"clearfix"},
         newT.a({href:"#", id:"file_save_form_close", clss:"overlay-close"}, "x"),
-        newT.div({id:"file_form_image_container"}, 
-          newT.img({src:file.data.file_entry.toURL()})
-        ),
         newT.fieldset(
           newT.label("Title:", newT.input({id:"file_title", clss:"text", value:metadata.get("title")})),
           newT.label("Notes:", newT.textarea({id:"file_notes"}, metadata.get("notes"))),
-          newT.label("Height: ", newT.strong(metadata.get("height"), "px"), " Width: ", newT.strong(metadata.get("width"), "px")),
-          newT.label("Original Url: ", newT[orig_url_type]({href:metadata.get("original_url"), title:metadata.get("original_url")}, metadata.get("original_url"))),
-          newT.label("Saved From: ", newT[page_url_type]({href: metadata.get("page_url"), title: metadata.get("page_url")}, metadata.get("page_url"))),
-          newT.label("Saved On: ", newT.strong(moment(metadata.get("ts")).format('MMM DD YYYY h:mm a'))),
-          newT.label("Type: ", newT.strong(metadata.get("mime_type"))),
-          newT.label("Size: ", newT.strong(BUCKET.util.commify(metadata.get("size")), " KB")),
-          newT.div({clss:"buttons"},
+          newT.div({clss:"buttons clearfix"},
             newT.a({id:"file_save_form_save", href:"#", title:"Save", clss:"btn save"}, "Save"),
             newT.a({id:"file_save_form_cancel", href:"#", title:"Cancel", clss:"btn cancel"}, "Cancel"),
 
             newT.input({type:"submit", value:"Save", clss:"submit"})
-          )
+          ),
+          newT.strong({id:"details"}, "File Details"),
+          newT.label("Height: ", newT.span(metadata.get("height"), "px"), " Width: ", newT.span(metadata.get("width"), "px")),
+          newT.label("Original Url: ", newT[orig_url_type]({href:metadata.get("original_url"), title:metadata.get("original_url")}, metadata.get("original_url"))),
+          newT.label("Saved From: ", newT[page_url_type]({href: metadata.get("page_url"), title: metadata.get("page_url")}, metadata.get("page_url"))),
+          newT.label("Saved On: ", newT.strong(moment(metadata.get("ts")).format('MMM DD YYYY h:mm a'))),
+          newT.label("Type: ", newT.strong(metadata.get("mime_type"))),
+          newT.label("Size: ", newT.strong(BUCKET.util.commify(metadata.get("size")), " KB"))
+
+        ),
+        newT.div({id:"file_form_image_container"}, 
+          newT.img({src:file.data.file_entry.toURL()})
         )
       )
     )

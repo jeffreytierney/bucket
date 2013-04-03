@@ -134,8 +134,9 @@ h2 {
   display: none;
 }
 
-.buttons {
-  margin-top: 20px;
+#file_save_form .buttons {
+  margin: 20px 0;
+  width: 75%;
 }
 
 .btn {
@@ -151,7 +152,12 @@ h2 {
 }
 
 #file_save_form_save {
-  margin-right: 20px;
+  margin-left: 20px;
+  margin-right: -10px;
+}
+
+#file_save_form .btn {
+  float: right;
 }
 
 .btn.cancel {
@@ -252,6 +258,7 @@ input.submit {
   right: 0;
   bottom: 0;
   color: #FFF;
+  font-size: 16px;
   
   background-color: rgba(0,0,0,0.8);
 }
@@ -264,9 +271,17 @@ input.submit {
 
 #file_save_form .text,
 #file_save_form textarea {
-  font-size: 14px;
+  font-size: 20px;
   padding: 2px 5px;
-  width: 250px;
+  width: 75%;
+}
+
+#file_save_form .text {
+  font-size: 24px;
+}
+
+#file_save_form textarea {
+  height: 100px;
 }
 
 .overlay-close {
@@ -285,19 +300,27 @@ input.submit {
   right: 20px;  
 }
 
-#file_form_image_container,
-#file_save_form fieldset {
+#file_form_image_container {
   float: left;
 }
 
+#file_save_form fieldset {
+  float: right;
+}
+
+#file_save_form fieldset {
+  width: 60%;
+  padding: 20px 0;
+}
+
 #file_form_image_container {
-  padding: 20px 50px;
-  margin-right: 20px;
+  padding: 20px 5%;
   text-align: center;
+  width: 30%;
 }
 
 #file_form_image_container img {
-  max-width: 300px;
+  width: 100%;
 }
 
 #file_save_form label,
@@ -310,7 +333,7 @@ input.submit {
 #file_save_form label a,
 #file_save_form label strong {
   display: inline-block;
-  max-width: 500px;
+  width: 75%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -320,6 +343,16 @@ input.submit {
   color: #FFF;
   font-weight: bold;
 }
+
+#file_save_form strong#details {
+  width: 90%;
+  font-size: 20px;
+  line-height: 30px;
+  border-bottom: 1px solid #FFF;
+  margin: 10px 0;
+  display: block;
+}
+
 
 #drop_zone {
   position: fixed;
@@ -422,6 +455,26 @@ input.submit {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+  }
+  
+  #file_form_image_container,
+  #file_save_form fieldset {
+    float: none;
+    width: 90%;
+    padding: 20px 5%;
+  }
+  #file_form_image_container {
+    text-align: center;
+  }
+  #file_form_image_container img {
+    width: 75%;
+    margin: 0 auto;
+  }
+  
+  #file_save_form .text,
+  #file_save_form textarea,
+  #file_save_form .buttons {
+    width: 85%;
   }
 }
 
