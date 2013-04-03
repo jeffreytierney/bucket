@@ -26,7 +26,7 @@
   function loadFiles() {
     var dfr = new RSVP.Promise();
     GH.files.loadAll().then(function(bf) {
-      document.getElementById("num_images").appendChild(document.createTextNode(bf.files.length));
+      $("#num_images").html(document.createTextNode(bf.files.length));
       dfr.resolve(bf);
     });
     return dfr;
@@ -34,7 +34,7 @@
   
   function checkQuota() {
     GH.bg_page.GH.fileStore.checkQuota(function(used, q) { 
-      document.getElementById("disk_space_used").appendChild(document.createTextNode(GH.util.commify(used)+" KB"));
+      $("#disk_space_used").html(document.createTextNode(GH.util.commify(used)+" KB"));
     });
   }
 
@@ -47,7 +47,7 @@
     function checkGifs() {
       GH.files.filter({mime_type:"image/gif"}).then(function(bf) {
         total += bf.display_files.length;
-        document.getElementById("num_gifs").appendChild(document.createTextNode(bf.display_files.length));
+        $("#num_gifs").html(document.createTextNode(bf.display_files.length));
         checkJpgs()
       });
     }
@@ -55,7 +55,7 @@
     function checkJpgs() {
       GH.files.filter({mime_type:"image/jpeg"}).then(function(bf) {
         total += bf.display_files.length;
-        document.getElementById("num_jpgs").appendChild(document.createTextNode(bf.display_files.length));
+        $("#num_jpgs").html(document.createTextNode(bf.display_files.length));
         checkPngs()
       });
     }
@@ -63,13 +63,13 @@
     function checkPngs() {   
       GH.files.filter({mime_type:"image/png"}).then(function(bf) {
         total += bf.display_files.length;
-        document.getElementById("num_pngs").appendChild(document.createTextNode(bf.display_files.length));
+        $("#num_pngs").html(document.createTextNode(bf.display_files.length));
         calculateOther(bf);
       });
     }
     
     function calculateOther(bf) {
-      document.getElementById("num_other_types").appendChild(document.createTextNode(bf.files.length - total));
+      $("#num_other_types").html(document.createTextNode(bf.files.length - total));
       bf.clearFilter().then(function() {
         dfr.resolve(bf);
       });
@@ -88,7 +88,7 @@
       oldest_date = moment(oldest.data.metadata.get("ts")).format('MMM DD YYYY h:mm a');
     }
         
-    document.getElementById("first_saved_on").appendChild(document.createTextNode(oldest_date));
+    $("#first_saved_on").html(document.createTextNode(oldest_date));
     dfr.resolve();
     return dfr;
   }
@@ -113,9 +113,9 @@
       average_size = Math.round(total_size / bf.files.length);
     }
     
-    document.getElementById("largest_file_size").appendChild(document.createTextNode(GH.util.commify(max_size)+" KB"));
-    document.getElementById("smallest_file_size").appendChild(document.createTextNode(GH.util.commify(min_size)+" KB"));
-    document.getElementById("average_file_size").appendChild(document.createTextNode(GH.util.commify(average_size)+" KB"));
+    $("#largest_file_size").html(document.createTextNode(GH.util.commify(max_size)+" KB"));
+    $("#smallest_file_size").html(document.createTextNode(GH.util.commify(min_size)+" KB"));
+    $("#average_file_size").html(document.createTextNode(GH.util.commify(average_size)+" KB"));
     dfr.resolve();
     return dfr;
   }
@@ -134,10 +134,84 @@
       if(size > max_size) { max_size = size; max = file; }
     }
 
-              document.getElementById("largest_image_size").appendChild(document.createTextNode(GH.util.commify(max.data.metadata.get("width"))+" x "+GH.util.commify(max.data.metadata.get("height"))));
-    document.getElementById("smallest_image_size").appendChild(document.createTextNode(GH.util.commify(min.data.metadata.get("width"))+" x "+GH.util.commify(min.data.metadata.get("height"))));
+              $("#largest_image_size").html(document.createTextNode(GH.util.commify(max.data.metadata.get("width"))+" x "+GH.util.commify(max.data.metadata.get("height"))));
+    $("#smallest_image_size").html(document.createTextNode(GH.util.commify(min.data.metadata.get("width"))+" x "+GH.util.commify(min.data.metadata.get("height"))));
     dfr.resolve();
     return dfr;
+  }
+  
+  
+  $("#export").on("click", function(e) {
+    e.preventDefault();
+    GH.files.export().then(function(ex) {
+      //document.execCommand('SaveAs',null,"gifhorse_export.json")
+      //$("#export_box").val(ex);
+      
+      var blob = new Blob([ex], {type: "application/octet-stream", name:"gifhorse_export.json"});
+      var saveas = document.createElement("iframe");
+      saveas.style.display = "none";
+
+      if(!!window.createObjectURL == false) {
+        saveas.src = window.webkitURL.createObjectURL(blob); 
+      }
+      else {
+        saveas.src = window.createObjectURL(blob); 
+      }
+
+      document.body.appendChild(saveas);
+      
+    })
+  });
+
+  $("#import_form").on("submit", function(e) {
+    e.preventDefault();
+    var file;
+    if(document.getElementById("import").files.length) {
+      file = document.getElementById("import").files[0];
+    }
+    
+    if(file) {
+      this.reset();
+      var reader = new FileReader();
+          
+
+      reader.onloadend = function(e) {
+
+        var val = {};
+        try {
+          val = JSON.parse(this.result);
+          if (val.length) {
+            doImport(val);
+          }
+        }
+        catch(e) {
+          console.log(e);
+          //dfr.reject(e);
+        }
+        
+      };
+      
+      reader.readAsText(file);
+    }
+  });
+  
+  function doImport(files) {
+    var len = files.length;
+        
+    doImportOne(0, files)
+    
+  }
+  
+  function doImportOne(i, files) {
+    if(i < files.length) {
+      GH.bg_page.GH.File.newFromDataURI(files[i].data_uri, files[i].metadata).loaded.then(function() {
+        GH.files.loadAll().then(function() {
+          runChecks();
+          doImportOne(i+1, files);
+        })
+        
+      });
+    }
   }
 
 })();

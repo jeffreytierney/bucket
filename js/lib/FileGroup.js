@@ -70,6 +70,28 @@
         func: func,
         scope: scope
       };
+    },
+    export: function() {
+      var dfr = new RSVP.Promise(),
+          files = [];
+          
+      for(var i=0, len=this.files.length; i<len; i++) {
+        (function(file) {
+          file.readAsDataUrl().then(function(data_uri) {
+            files.push({
+              metadata:file.data.metadata.toJSON(), 
+              data_uri: data_uri,
+              file_name: file.data.file_name
+            });
+            
+            if(files.length === len) {
+              dfr.resolve(JSON.stringify(files));
+            }
+          })
+        })(this.files[i]);
+      }
+      
+      return dfr;
     }
   }
 })();

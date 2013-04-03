@@ -136,7 +136,7 @@
   
   bFile.newFromDataURI = function(url, metadata) {
     metadata = metadata || {};
-    metadata.original_url = "";
+    metadata.original_url = metadata.original_url || "";
 
     var bf = new bFile();
 

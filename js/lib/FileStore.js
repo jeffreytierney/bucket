@@ -525,7 +525,8 @@
       var lk_promise = this.listKeys()
       lk_promise.then(function(results) {
         var keys = results.map(function(file) { return file.name; });
-        keys.forEach(function(key) { _this.remove(key); });
+        _this.metadata_cache = {};
+        _this.saveMetadata();
         dfr.resolve();
       });
       
