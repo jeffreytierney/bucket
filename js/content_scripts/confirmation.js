@@ -3,7 +3,7 @@
     function(request, sender, sendResponse) {
       if (request.image_status === "success") {
         var img = newT.img({
-              id:"bucket_img", 
+              id:"gh_img", 
               src:request.image_data_uri, 
               style:"position:fixed; bottom:0; right:0;"
             });

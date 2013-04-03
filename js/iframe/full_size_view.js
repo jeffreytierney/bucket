@@ -2,7 +2,7 @@
   GH.util.showFullSize = function(key) {
     var file = GH.bg_page.GH.File.load(key);
     file.loaded.then(function() { // success
-      $(document.body).append(newT.render("full_size_view.bucket", file));
+      $(document.body).append(newT.render("full_size_view.gh", file));
       $("#full_size_view_close").on("click", function(e) {
         e.preventDefault();
         closeView();
@@ -22,7 +22,7 @@
     $(document.body).off("keydown.close_form")
   }
   
-  newT.save("full_size_view.bucket", function(file) {
+  newT.save("full_size_view.gh", function(file) {
     var metadata = file.data.metadata;
     return (
       newT.div({id:"full_size_view", clss:"clearfix"},

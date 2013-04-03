@@ -8,16 +8,16 @@
     }
   }
   function removeIFrame() {
-    removeEl("_bucket_iframe");
+    removeEl("_gh_iframe");
   }
   
   function removeLoader() {
-    removeEl("_bucket_loader")
+    removeEl("_gh_loader")
   }
   
   function getImageDimensions(file_obj) {
     var img = newT.img({
-      id:"bucket_img", 
+      id:"gh_img", 
       src:file_obj.image_file_data_uri, 
       style:"position:absolute; top:-99999px; left:-99999px;"
     });
@@ -55,24 +55,24 @@
   }
   
   function showLoader() {
-    if(!document.getElementById("_bucket_loader")) {
-      var _bucket_loader = newT.div({id:"_bucket_loader"},
+    if(!document.getElementById("_gh_loader")) {
+      var _gh_loader = newT.div({id:"_gh_loader"},
         newT.p("Loading")
       );
-      document.body.appendChild(_bucket_loader);
+      document.body.appendChild(_gh_loader);
     }
   }
   
   function showIFrame(src) {
     removeLoader();
-    if(!document.getElementById("_bucket_iframe")) {
-      var iframe = newT.iframe({id:"_bucket_iframe", src:src});
+    if(!document.getElementById("_gh_iframe")) {
+      var iframe = newT.iframe({id:"_gh_iframe", src:src});
       document.body.appendChild(iframe);
     }
   }
   
   function swapIFramePosition() {
-    var el = document.getElementById("_bucket_iframe"),
+    var el = document.getElementById("_gh_iframe"),
         classname_re = /\btop\b/i,
         new_class;
         

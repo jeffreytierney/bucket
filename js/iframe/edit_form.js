@@ -4,7 +4,7 @@
     var file = GH.bg_page.GH.File.load(key);
     file.loaded.then(function() { // success
       //console.log(file);
-      $(document.body).append(newT.render("edit_form.bucket", file));
+      $(document.body).append(newT.render("edit_form.gh", file));
       
       $("#file_title").focus();
       
@@ -52,7 +52,7 @@
     $(document.body).off("keydown.close_form")
   }
   
-  newT.save("edit_form.bucket", function(file) {
+  newT.save("edit_form.gh", function(file) {
     var metadata = file.data.metadata,
         orig_url_type = metadata.get("original_url").match(/^https?\:\/\//) ? "a" : "span",
         page_url_type = metadata.get("page_url").match(/^https?\:\/\//) ? "a" : "span";

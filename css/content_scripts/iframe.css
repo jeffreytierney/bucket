@@ -1,4 +1,4 @@
-iframe#_bucket_iframe {
+iframe#_gh_iframe {
   position: fixed !important;
   bottom: 0 !important;
   left: 0 !important;
@@ -8,12 +8,12 @@ iframe#_bucket_iframe {
   z-index: 999999999;
 }
 
-iframe#_bucket_iframe.top {
+iframe#_gh_iframe.top {
   bottom:auto;
   top: 0;
 }
 
-div#_bucket_loader {
+div#_gh_loader {
   position: fixed !important;
   top: 0 !important;
   bottom: 0 !important;
@@ -24,7 +24,7 @@ div#_bucket_loader {
   z-index: 999999999;
 }
 
-div#_bucket_loader p {
+div#_gh_loader p {
   position: absolute;
   top: 50%;
   margin-top: -50px;

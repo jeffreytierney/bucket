@@ -219,7 +219,7 @@
         var $images = $("#images").empty();
         var frag = newT.frag();
         for (var i=0; len=bf.files.length, i<len; i++) {
-          frag.appendChild(newT.render("image_item.bucket", bf.files[i]));
+          frag.appendChild(newT.render("image_item.gh", bf.files[i]));
         }
         $images.append(frag);
         dfr.resolve(bf);
@@ -232,7 +232,7 @@
   function updateImageDimensions(bf) {
     var dfr = new RSVP.Promise();
     var img = newT.img({
-      id:"bucket_img_dim_check", 
+      id:"gh_img_dim_check", 
       src:bf.data.file_entry.toURL(), 
       style:"position:fixed; top:100%; left:100%;"
     });
@@ -261,7 +261,7 @@
 
   }
   
-  newT.save("image_item.bucket", function(file) {
+  newT.save("image_item.gh", function(file) {
     var md = file.data.metadata,
         orig_url_type = md.get("original_url").match(/^https?\:\/\//) ? "a" : "span";
     return (
@@ -282,7 +282,7 @@
   GH.util.reloadImage = function(key) {
     var file = GH.bg_page.GH.File.load(key);
     file.loaded.then(function() { // success
-      $("#"+key.split(".")[0]).replaceWith(newT.render("image_item.bucket", file))
+      $("#"+key.split(".")[0]).replaceWith(newT.render("image_item.gh", file))
     });
   }
   
