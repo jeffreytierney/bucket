@@ -180,8 +180,19 @@
         var val = {};
         try {
           val = JSON.parse(this.result);
-          if (val.length) {
-            doImport(val);
+          if (typeof val === "object" && val.slice && val.length) {
+            var can_import = true;
+            for(var i=0, len=val.length; i<len; i++) { 
+              if(val[i].metadata && val[i].data_uri && val[i].file_name) {
+                continue;
+              } else {
+                can_import = false
+                break;
+              }
+            }
+            if(can_import) {
+              doImport(val);
+            }
           }
         }
         catch(e) {
@@ -195,9 +206,13 @@
     }
   });
   
+  var $import_status = $("#import_status"),
+      $status_update = $("#status_update");
+
   function doImport(files) {
     var len = files.length;
-        
+    
+    $import_status.addClass("is-importing");
     doImportOne(0, files)
     
   }
@@ -207,10 +222,22 @@
       GH.bg_page.GH.File.newFromDataURI(files[i].data_uri, files[i].metadata).loaded.then(function() {
         GH.files.loadAll().then(function() {
           runChecks();
+          setImportStatus(i+1, files.length);
           doImportOne(i+1, files);
         })
-        
       });
+    }
+  }
+  
+  function setImportStatus(i, len) {
+    if(i===len) {
+      $status_update.html("Import Complete... " + i + " of " + len + " images imported");
+      setTimeout(function() {
+        $import_status.removeClass("is-importing");
+        $status_update.html("");
+      }, 2000);
+    } else {
+      $status_update.html("Imported " + i + " of " + len + " images...");
     }
   }
 

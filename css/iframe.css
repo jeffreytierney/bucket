@@ -251,7 +251,7 @@ input.submit {
 }
 
 #file_save_form,
-#full_size_view {
+#full_size_view{
   position: fixed;
   top: 0;
   left: 0;
@@ -262,6 +262,10 @@ input.submit {
   
   background-color: rgba(0,0,0,0.8);
 }
+
+
+
+
 
 #full_size_view img {
   position: absolute;
@@ -354,7 +358,8 @@ input.submit {
 }
 
 
-#drop_zone {
+#drop_zone,
+#import_status {
   position: fixed;
   top: 0;
   right: 0;
@@ -364,6 +369,13 @@ input.submit {
   background-color: #000;
   z-index: 1;
 }
+#import_status {
+  background-color: rgba(0,0,0,0.7);
+}
+
+#import_status.is-importing {
+  display: block;
+}
 
 #drop_zone.is-dragging {
   display: block;
@@ -371,6 +383,9 @@ input.submit {
 
 #drop_zone:after {
   content: "DROP FILES HERE";
+}
+#drop_zone:after,
+#import_status p {
   display: block;
   height: 100px;
   line-height: 100px;
