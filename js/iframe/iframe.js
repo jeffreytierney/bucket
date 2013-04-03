@@ -187,12 +187,14 @@
     if($tgt.is("a.delete")) {
       e.preventDefault();
       e.stopPropagation();
-      var $parent = $tgt.closest("div"),
-          key = $parent.data("file_name");
+      if(confirm("Are you sure you want to delete this image?")) {
+        var $parent = $tgt.closest("div"),
+            key = $parent.data("file_name");
           
-      chrome.extension.sendMessage({type:"delete_image", key:key}, function(response) {
-        $parent.remove();
-      });
+        chrome.extension.sendMessage({type:"delete_image", key:key}, function(response) {
+          $parent.remove();
+        });
+      }
     } else if ($tgt.is("a.edit")) {
       e.preventDefault();
       e.stopPropagation();
