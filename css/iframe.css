@@ -42,18 +42,23 @@
 
 .clearfix {
   display: block;
-  &:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-  }
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
 }
 
 body {
   padding: 20px;
+}
+
+body#image_page {
+  min-width: 333px;
 }
 
 h1 {
@@ -64,7 +69,6 @@ h2 {
 }
 
 #header {
-  height: 72px;
   line-height: 72px;
   vertical-align: middle;
   margin-bottom: 20px;
@@ -166,11 +170,11 @@ input.submit {
 #images div {
   display: inline-block;
   vertical-align: top;
-  width: 250px;
+  width: 21%;
   text-align: center;
   position: relative;
   color: #FFF;
-  margin: 20px;
+  margin: 2%;
 }
 
 #images div.is-hidden {
@@ -381,4 +385,55 @@ input.submit {
   vertical-align: middle;
   text-align: left;
   margin-right: 20px;
+}
+
+
+@media screen and (max-width: 1100px) {
+  #images div {
+    width: 27%;
+    margin: 3%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  #images div {
+    width: 40%;
+    margin: 5%;
+  }
+}
+
+@media screen and (max-width: 780px) {
+  #search_form label span {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 725px) {
+
+  #search_form,
+  #logo {
+    float: none;
+  }
+  #search_form {
+    display: block;
+  }
+  
+  #header {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
+@media screen and (max-width: 500px) {
+  #images div {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  #q {
+    width: 90%;
+  }
 }
