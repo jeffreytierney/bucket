@@ -8,9 +8,14 @@
       
       $("#file_title").focus();
       
-      $("#file_save_form_close").on("click", function(e) {
+      $("#file_save_form_close, #file_save_form_cancel").on("click", function(e) {
         e.preventDefault();
         closeForm();
+      });
+      
+      $("#file_save_form_save").on("click", function(e) {
+        e.preventDefault();
+        $("#file_save_form").submit();
       });
       
       $("#file_save_form").on("submit", function(e) {
@@ -61,13 +66,18 @@
         newT.fieldset(
           newT.label("Title:", newT.input({id:"file_title", clss:"text", value:metadata.get("title")})),
           newT.label("Notes:", newT.textarea({id:"file_notes"}, metadata.get("notes"))),
-          newT.label("Height: ", newT.strong(metadata.get("height")), " Width: ", newT.strong(metadata.get("width"))),
+          newT.label("Height: ", newT.strong(metadata.get("height"), "px"), " Width: ", newT.strong(metadata.get("width"), "px")),
           newT.label("Original Url: ", newT[orig_url_type]({href:metadata.get("original_url"), title:metadata.get("original_url")}, metadata.get("original_url"))),
           newT.label("Saved From: ", newT[page_url_type]({href: metadata.get("page_url"), title: metadata.get("page_url")}, metadata.get("page_url"))),
-          newT.label("Saved On: ", newT.strong(new Date(metadata.get("ts")))),
+          newT.label("Saved On: ", newT.strong(moment(metadata.get("ts")).format('MMM DD YYYY h:mm a'))),
           newT.label("Type: ", newT.strong(metadata.get("mime_type"))),
-          newT.label("Size: ", newT.strong(metadata.get("size"))),
-          newT.input({type:"submit", value:"Save"})
+          newT.label("Size: ", newT.strong(BUCKET.util.commify(metadata.get("size")), " KB")),
+          newT.div({clss:"buttons"},
+            newT.a({id:"file_save_form_save", href:"#", title:"Save", clss:"btn save"}, "Save"),
+            newT.a({id:"file_save_form_cancel", href:"#", title:"Cancel", clss:"btn cancel"}, "Cancel"),
+
+            newT.input({type:"submit", value:"Save", clss:"submit"})
+          )
         )
       )
     )

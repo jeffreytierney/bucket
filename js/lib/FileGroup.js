@@ -16,13 +16,13 @@
           _this = this;
       BUCKET.fileStore.getSortedFiles().then(function(files) {
         _this.files = files;
-        dfr.resolve(files);
+        dfr.resolve(_this);
       });
       
       return dfr;
     },
     clearFilter: function() {
-      this.filter("");
+      return this.filter("");
     },
     filter: function(q_obj) {
       if(typeof q_obj === "undefined") {

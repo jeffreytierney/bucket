@@ -56,41 +56,12 @@ body {
   padding: 20px;
 }
 
-/*
-#links {
-  display: none;
-  position: absolute;
-  top: 10px;
-  right: 10px;  
+h1 {
+  font-size: 48px;
 }
-
-body.iframe #links {
-  display: block;
+h2 {
+  font-size: 24px;
 }
-
-#links a,
-#file_save_form_close {
-  display: inline-block;
-  height: 30px;
-  line-height: 30px;  
-  font-size: 16px;
-  color: #FFF;
-  border: 1px solid #FFF;
-  text-decoration: none;
-  text-align: center;
-  margin-left: 10px;
-  padding: 0 10px;
-}
-
-#close_iframe {
-  width: 30px;
-  padding: 0;
-}
-#images {
-  height: 200px;
-  overflow: auto;
-}
-*/
 
 #header {
   height: 72px;
@@ -106,7 +77,6 @@ body.iframe #links {
 
 #logo {
   float: left;
-  font-size: 48px;
   line-height: 72px;
   padding-left: 72px;
   background-image: url(/images/gifhorse_72.png);
@@ -157,6 +127,39 @@ body.iframe #links {
 }
 
 #search_form.is-empty #q_clear {
+  display: none;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #fff;
+  color: #000;
+  height: 36px;
+  line-height: 36px;
+  font-size: 24px;
+  padding: 0 10px;
+  border: 2px solid #FFF;
+  border-radius: 5px;
+}
+
+#file_save_form_save {
+  margin-right: 20px;
+}
+
+.btn.cancel {
+  color: #FFF;
+  background-color: #FF0C00;
+}
+.btn.save {
+  color: #FFF;
+  background-color: #5DB952;
+}
+
+input.submit {
   display: none;
 }
 
@@ -341,4 +344,41 @@ body.iframe #links {
   margin-top: -50px;
   width: 100%;
   text-align: center;
+}
+
+#stats li {
+  display: inline-block;
+  width: 150px;
+  margin: 0 20px;
+}
+
+#stats li span,
+#stats li strong {
+  display: block;
+  text-align: center;
+}
+
+#stats li strong {
+  font-size: 24px;
+}
+
+#stats li span {
+  font-size: 64px;
+}
+
+
+#stats li.full {
+  display: block;
+  width: 100%;
+  line-height: 75px;
+  margin-bottom: 20px;
+}
+
+
+#stats li.full span,
+#stats li.full strong {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  margin-right: 20px;
 }
