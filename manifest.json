@@ -1,6 +1,6 @@
 {
   "name": "GifHorse",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "manifest_version": 2,
   "description": "Don't look a gifhorse in the mouth",
   "background": {

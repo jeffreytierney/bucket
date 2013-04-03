@@ -386,7 +386,8 @@ input.submit {
 #stats li {
   display: inline-block;
   width: 150px;
-  margin: 0 20px;
+  margin: 10px 20px;
+  vertical-align: top;
 }
 
 #stats li span,
@@ -401,6 +402,10 @@ input.submit {
 
 #stats li span {
   font-size: 64px;
+}
+
+#stats li span.big-num {
+  font-size: 36px;
 }
 
 

@@ -6,10 +6,18 @@
   function init(bg) {
     BUCKET.bg_page = bg;
     BUCKET.files = new BUCKET.bg_page.BUCKET.FileGroup();
+    runChecks();
+  }
+  
+  function runChecks() {
     loadFiles().then(function(bf) {
       return checkIndividualFileTypes();
     }).then(function(bf) {
       return checkOldestFile();
+    }).then(function(bf) {
+      return checkExtremeFileSizes();
+    }).then(function(bf) {
+      return checkExtremeImageSizes();
     });
     checkQuota();
 
@@ -81,6 +89,54 @@
     }
         
     document.getElementById("first_saved_on").appendChild(document.createTextNode(oldest_date));
+    dfr.resolve();
+    return dfr;
+  }
+  
+  function checkExtremeFileSizes() {
+    var dfr = new RSVP.Promise(),
+        total_size = 0,
+        max_size = 0,
+        min_size = 0,
+        average_size = 0,
+        bf = BUCKET.files;
+        
+    var size;
+    for(var i=0, len=bf.files.length; i<len; i++) {
+      size = bf.files[i].data.metadata.get("size");
+      total_size += size;
+      if(!min_size || size < min_size) { min_size = size; }
+      if(size > max_size) { max_size = size; }
+    }
+    
+    if(bf.files.length) {
+      average_size = Math.round(total_size / bf.files.length);
+    }
+    
+    document.getElementById("largest_file_size").appendChild(document.createTextNode(BUCKET.util.commify(max_size)+" KB"));
+    document.getElementById("smallest_file_size").appendChild(document.createTextNode(BUCKET.util.commify(min_size)+" KB"));
+    document.getElementById("average_file_size").appendChild(document.createTextNode(BUCKET.util.commify(average_size)+" KB"));
+    dfr.resolve();
+    return dfr;
+  }
+  
+  function checkExtremeImageSizes() {
+    var dfr = new RSVP.Promise(),
+        max_size = 0, max,
+        min_size = 0, min,
+        bf = BUCKET.files;
+        
+    var size;
+    for(var i=0, len=bf.files.length; i<len; i++) {
+      file = bf.files[i],
+      size = file.data.metadata.get("height") * file.data.metadata.get("width");
+      if(!min_size || size < min_size) { min_size = size; min = file; }
+      if(size > max_size) { max_size = size; max = file; }
+    }
+
+              document.getElementById("largest_image_size").appendChild(document.createTextNode(BUCKET.util.commify(max.data.metadata.get("width"))+" x "+BUCKET.util.commify(max.data.metadata.get("height"))));
+    document.getElementById("smallest_image_size").appendChild(document.createTextNode(BUCKET.util.commify(min.data.metadata.get("width"))+" x "+BUCKET.util.commify(min.data.metadata.get("height"))));
+    dfr.resolve();
     return dfr;
   }
 
