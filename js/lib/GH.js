@@ -12,7 +12,5 @@
     }
     return num_string_array.reverse().join("");
   }
-  
-  document.getElementById("copyright_year").appendChild(document.createTextNode((new Date()).getFullYear()));
 
 })();
