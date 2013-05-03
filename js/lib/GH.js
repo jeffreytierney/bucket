@@ -12,5 +12,7 @@
     }
     return num_string_array.reverse().join("");
   }
+  
+  $("#copyright_year").html((new Date()).getFullYear());
 
 })();
