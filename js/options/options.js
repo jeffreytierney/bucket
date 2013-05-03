@@ -34,7 +34,7 @@
   
   function checkQuota() {
     GH.bg_page.GH.fileStore.checkQuota(function(used, q) { 
-      $("#disk_space_used").html(document.createTextNode(GH.util.commify(used)+" KB"));
+      $("#disk_space_used").html(document.createTextNode(GH.util.commify(used)+" B"));
     });
   }
 
@@ -113,9 +113,9 @@
       average_size = Math.round(total_size / bf.files.length);
     }
     
-    $("#largest_file_size").html(document.createTextNode(GH.util.commify(max_size)+" KB"));
-    $("#smallest_file_size").html(document.createTextNode(GH.util.commify(min_size)+" KB"));
-    $("#average_file_size").html(document.createTextNode(GH.util.commify(average_size)+" KB"));
+    $("#largest_file_size").html(document.createTextNode(GH.util.commify(max_size)+" B"));
+    $("#smallest_file_size").html(document.createTextNode(GH.util.commify(min_size)+" B"));
+    $("#average_file_size").html(document.createTextNode(GH.util.commify(average_size)+" B"));
     dfr.resolve();
     return dfr;
   }
