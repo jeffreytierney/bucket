@@ -13,6 +13,6 @@
     return num_string_array.reverse().join("");
   }
   
-  $("#copyright_year").html((new Date()).getFullYear());
+  document.getElementById("copyright_year").appendChild(document.createTextNode((new Date()).getFullYear()));
 
 })();
