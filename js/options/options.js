@@ -162,6 +162,18 @@
       
     })
   });
+  
+  $("#file_btn").on("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $("#import").click();
+  });
+  
+  $("#import_submit_btn").on("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $("#import_form").submit();    
+  });
 
   $("#import_form").on("submit", function(e) {
     e.preventDefault();

@@ -9,6 +9,9 @@
   <div id="header" class="clearfix">
     <h1 id="logo" title="Don't look me in the mouth">GifHorse (options)</h1>
   </div>
+  <p class="alert info">
+    Note: deleting the extension will delete all saved images. To preserve your images, use the export functionality below
+  </p>
   
   <h2>Some usage stats</h2>
   <ul id="stats">
@@ -64,14 +67,16 @@
   </ul>
   
   <h2>Export</h2>
-  <a href="#" id="export">Click To Export</a>
+  <a href="#" id="export" class="btn">Click To Export</a>
 
 
   <h2>Import</h2>
   <form id="import_form">
     <fieldset>
+      <a href="#" class="btn" id="file_btn">Choose File</a>
       <input type="file" id="import" value="choose file" />
-      <input type="submit" value="then import">
+      <a href="#" class="btn save" id="import_submit_btn">Then Import</a>
+      <input type="submit" value="then import" />
     </fieldset>
   </form>
   <div id="import_status">

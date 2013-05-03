@@ -139,7 +139,8 @@ h2 {
   width: 75%;
 }
 
-.btn {
+.btn,
+input[type=button] {
   display: inline-block;
   background-color: #fff;
   color: #000;
@@ -445,6 +446,49 @@ input.submit {
   width: 500px;
 }
 
+#export {
+  margin: 20px 0; 
+}
+
+#import_form {
+  margin: 10px 0;
+  padding: 10px 0;
+}
+
+#import_form fieldset {
+  position: relative;
+}
+
+#import_form input[type=file] {
+  font-size: 20px;
+  vertical-align: middle;
+  z-index: 1;
+  
+  margin-left: -60px;
+  text-indent: -220px;
+  
+  line-height: 30px;
+  margin-right: 30px;
+}
+
+#import_form input[type=submit] {
+  display: none;
+}
+
+#file_btn {
+  z-index: 2;
+}
+
+p.alert {
+  background-color: #FFF;
+  border: 2px solid #bcbcbc;
+  border-radius: 10px;
+  color: #000;
+  font-size: 20px;
+  margin: 20px 5px;
+  padding: 10px;
+  line-height: 24px;
+}
 
 @media screen and (max-width: 1100px) {
   #images div {
